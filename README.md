@@ -1,1 +1,1 @@
-CS 240 Chess Repo
+# CS 240 Chess Repo
