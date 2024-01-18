@@ -1,7 +1,10 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
+
+import static java.util.Objects.isNull;
 
 /**
  * Represents a single chess piece
@@ -52,7 +55,50 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+        ArrayList<ChessMove> moves = new ArrayList<ChessMove>();
+        ChessPiece piece = board.getPiece(myPosition);
+        PieceType type = piece.type;
+        ChessGame.TeamColor color = piece.color;
+        switch (type){
+            case KING -> {
+                if (row - 1 > 0){
+                    if (col - 1 > 0) {
+                        ChessPosition pos = new ChessPosition(row - 1, col - 1);
+                        ChessPiece obstacle = board.getPiece(pos);
+                        if (isNull(obstacle)){
+                            ChessMove move = new ChessMove(myPosition, pos, null);
+                            moves.add(move);
+                        } else if (obstacle.color != color){
+                            ChessMove move = new ChessMove(myPosition, pos, null);
+                            moves.add(move);
+                        }
+                    }
+                    if (col + 1 < 9) {
+                        ChessPosition pos = new ChessPosition(row - 1, col + 1);
+                        ChessPiece obstacle = board.getPiece(pos);
+                        if (isNull(obstacle)){
+                            ChessMove move = new ChessMove(myPosition, pos, null);
+                            moves.add(move);
+                        } else if (obstacle.color != color){
+                            ChessMove move = new ChessMove(myPosition, pos, null);
+                            moves.add(move);
+                        }
+                    }
+                    ChessPosition pos = new ChessPosition(row - 1, col);
+                    ChessPiece obstacle = board.getPiece(pos);
+                    if (isNull(obstacle)){
+                        ChessMove move = new ChessMove(myPosition, pos, null);
+                        moves.add(move);
+                    } else if (obstacle.color != color){
+                        ChessMove move = new ChessMove(myPosition, pos, null);
+                        moves.add(move);
+                    }
+                }
+            }
+        }
+        return moves;
     }
 
     @Override
