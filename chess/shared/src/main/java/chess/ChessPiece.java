@@ -96,6 +96,61 @@ public class ChessPiece {
                         moves.add(move);
                     }
                 }
+                if (row + 1 < 9){
+                    if (col - 1 > 0) {
+                        ChessPosition pos = new ChessPosition(row + 1, col - 1);
+                        ChessPiece obstacle = board.getPiece(pos);
+                        if (isNull(obstacle)){
+                            ChessMove move = new ChessMove(myPosition, pos, null);
+                            moves.add(move);
+                        } else if (obstacle.color != color){
+                            ChessMove move = new ChessMove(myPosition, pos, null);
+                            moves.add(move);
+                        }
+                    }
+                    if (col + 1 < 9) {
+                        ChessPosition pos = new ChessPosition(row + 1, col + 1);
+                        ChessPiece obstacle = board.getPiece(pos);
+                        if (isNull(obstacle)){
+                            ChessMove move = new ChessMove(myPosition, pos, null);
+                            moves.add(move);
+                        } else if (obstacle.color != color){
+                            ChessMove move = new ChessMove(myPosition, pos, null);
+                            moves.add(move);
+                        }
+                    }
+                    ChessPosition pos = new ChessPosition(row + 1, col);
+                    ChessPiece obstacle = board.getPiece(pos);
+                    if (isNull(obstacle)){
+                        ChessMove move = new ChessMove(myPosition, pos, null);
+                        moves.add(move);
+                    } else if (obstacle.color != color){
+                        ChessMove move = new ChessMove(myPosition, pos, null);
+                        moves.add(move);
+                    }
+                }
+                if (col - 1 > 0) {
+                    ChessPosition pos = new ChessPosition(row, col - 1);
+                    ChessPiece obstacle = board.getPiece(pos);
+                    if (isNull(obstacle)){
+                        ChessMove move = new ChessMove(myPosition, pos, null);
+                        moves.add(move);
+                    } else if (obstacle.color != color){
+                        ChessMove move = new ChessMove(myPosition, pos, null);
+                        moves.add(move);
+                    }
+                }
+                if (col + 1 < 9) {
+                    ChessPosition pos = new ChessPosition(row, col + 1);
+                    ChessPiece obstacle = board.getPiece(pos);
+                    if (isNull(obstacle)){
+                        ChessMove move = new ChessMove(myPosition, pos, null);
+                        moves.add(move);
+                    } else if (obstacle.color != color){
+                        ChessMove move = new ChessMove(myPosition, pos, null);
+                        moves.add(move);
+                    }
+                }
             }
         }
         return moves;
