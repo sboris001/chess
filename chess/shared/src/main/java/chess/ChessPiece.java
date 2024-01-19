@@ -313,7 +313,14 @@ public class ChessPiece {
                 }
             }
             case KNIGHT -> {
-                ChessPosition[] all = {new ChessPosition(row - 2, col - 1), new ChessPosition(row - 2, col - 2), new ChessPosition(row - 3, col - 3), new ChessPosition(row - 4, col - 4), new ChessPosition(row - 5, col - 5), new ChessPosition(row - 6, col - 6), new ChessPosition(row - 7, col - 7)};
+                ChessPosition[] all = {new ChessPosition(row - 2, col - 1), new ChessPosition(row - 2, col + 1), new ChessPosition(row - 1, col + 2), new ChessPosition(row + 1, col + 2), new ChessPosition(row + 2, col + 1), new ChessPosition(row + 2, col - 1), new ChessPosition(row + 1, col - 2), new ChessPosition(row - 1, col - 2)};
+                for (ChessPosition checkPosition: all) {
+                    if (checkPosition.row > 0 && checkPosition.row < 9 && checkPosition.col > 0 && checkPosition.col < 9){
+                        if (isNull(board.getPiece(checkPosition)) || board.getPiece(checkPosition).color != color) {
+                            moves.add(new ChessMove(myPosition, checkPosition, null));
+                        }
+                    }
+                }
             }
         }
         return moves;
