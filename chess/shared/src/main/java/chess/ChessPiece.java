@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -318,6 +319,30 @@ public class ChessPiece {
                     if (checkPosition.row > 0 && checkPosition.row < 9 && checkPosition.col > 0 && checkPosition.col < 9){
                         if (isNull(board.getPiece(checkPosition)) || board.getPiece(checkPosition).color != color) {
                             moves.add(new ChessMove(myPosition, checkPosition, null));
+                        }
+                    }
+                }
+            }
+            case PAWN -> {
+                ChessPosition[] whiteStartingPos = {new ChessPosition(2, 1), new ChessPosition(2, 2), new ChessPosition(2, 3), new ChessPosition(2, 4), new ChessPosition(2, 5), new ChessPosition(2, 6), new ChessPosition(2, 7), new ChessPosition(2, 8)};
+                ChessPosition[] blackStartingPos = {new ChessPosition(7, 1), new ChessPosition(7, 2), new ChessPosition(7, 3), new ChessPosition(7, 4), new ChessPosition(7, 5), new ChessPosition(7, 6), new ChessPosition(7, 7), new ChessPosition(7, 8)};
+                if (color == ChessGame.TeamColor.WHITE){
+                    if (Arrays.asList(whiteStartingPos).contains(myPosition)){
+                        ChessPosition[] doubleMoves = {new ChessPosition(row + 1, col), new ChessPosition(row + 2, col)};
+                        for (ChessPosition check : doubleMoves){
+                            if (isNull(board.getPiece(check))){
+                                moves.add(new ChessMove(myPosition, check, null));
+                            } else {break;}
+                        }
+                    }
+                }
+                if (color == ChessGame.TeamColor.BLACK){
+                    if (Arrays.asList(blackStartingPos).contains(myPosition)){
+                        ChessPosition[] doubleMoves = {new ChessPosition(row - 1, col), new ChessPosition(row - 2, col)};
+                        for (ChessPosition check : doubleMoves){
+                            if (isNull(board.getPiece(check))){
+                                moves.add(new ChessMove(myPosition, check, null));
+                            } else {break;}
                         }
                     }
                 }
