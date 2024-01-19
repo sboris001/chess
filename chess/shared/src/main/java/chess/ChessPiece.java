@@ -1,9 +1,6 @@
 package chess;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
 
 import static java.util.Objects.isNull;
 
@@ -68,7 +65,7 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
-        ArrayList<ChessMove> moves = new ArrayList<ChessMove>();
+        HashSet<ChessMove> moves = new HashSet<ChessMove>();
         ChessPiece piece = board.getPiece(myPosition);
         PieceType type = piece.type;
         ChessGame.TeamColor color = piece.color;
