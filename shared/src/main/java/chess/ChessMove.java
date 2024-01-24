@@ -11,12 +11,13 @@ import java.util.Objects;
 public class ChessMove {
     private ChessPosition startPos;
     private ChessPosition endPos;
-    private ChessPiece.PieceType promoPiece;
+    private ChessPiece.PieceType promo;
+
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
                      ChessPiece.PieceType promotionPiece) {
         this.startPos = startPosition;
         this.endPos = endPosition;
-        this.promoPiece = promotionPiece;
+        this.promo = promotionPiece;
     }
 
     /**
@@ -40,17 +41,7 @@ public class ChessMove {
      * @return Type of piece to promote a pawn to, or null if no promotion
      */
     public ChessPiece.PieceType getPromotionPiece() {
-        return this.promoPiece;
-    }
-
-    @Override
-    public String toString() {
-        return "ChessMove{" +
-                "startPos=" + startPos +
-                ", endPos=" + endPos +
-                ", promoPiece=" + promoPiece +
-                '}' +
-                '\n';
+        return this.promo;
     }
 
     @Override
@@ -58,11 +49,11 @@ public class ChessMove {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChessMove chessMove = (ChessMove) o;
-        return Objects.equals(startPos, chessMove.startPos) && Objects.equals(endPos, chessMove.endPos) && promoPiece == chessMove.promoPiece;
+        return Objects.equals(startPos, chessMove.startPos) && Objects.equals(endPos, chessMove.endPos) && promo == chessMove.promo;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(startPos, endPos, promoPiece);
+        return Objects.hash(startPos, endPos, promo);
     }
 }
