@@ -8,7 +8,7 @@ import java.util.Arrays;
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
-public class ChessBoard {
+public class ChessBoard implements Cloneable{
     ChessPiece[][] board = new ChessPiece[8][8];
     public ChessBoard() {
         
@@ -181,6 +181,7 @@ public class ChessBoard {
         addPiece(bPawn8Pos, bPawn8);
 
     }
+
 
     @Override
     public boolean equals(Object o) {
