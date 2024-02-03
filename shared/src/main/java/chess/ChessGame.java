@@ -1,7 +1,7 @@
 package chess;
 
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
 
 import static java.util.Objects.isNull;
 
@@ -60,7 +60,11 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+//        ChessPosition start = move.getStartPosition();
+//        ChessPosition end = move.getEndPosition();
+//        ChessPiece.PieceType promo = move.getPromotionPiece();
+//        this.board.
+        
     }
 
     /**
@@ -73,19 +77,18 @@ public class ChessGame {
         for (int i = 1; i < 9; i++){
             for (int j = 1; j < 9; j++){
                 ChessPosition position = new ChessPosition(i, j);
-                ChessPiece piece = board.getPiece(position);
+                ChessPiece piece = this.board.getPiece(position);
                 if (!isNull(piece)){
                     if (piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == teamColor){
                         for (int k = 1; k < 9; k++){
                             for (int l = 1; l < 9; l++){
                                 ChessPosition pos = new ChessPosition(k, l);
-                                ChessPiece enemy = board.getPiece(pos);
+                                ChessPiece enemy = this.board.getPiece(pos);
                                 if (!isNull(enemy)){
                                     if (enemy.getTeamColor() != teamColor){
-                                        Collection<ChessMove> checkMoves = enemy.pieceMoves(board, pos);
+                                        Collection<ChessMove> checkMoves = enemy.pieceMoves(this.board, pos);
                                         for (ChessMove move : checkMoves){
                                             ChessPosition check = move.getEndPosition();
-                                            System.out.println(check);
                                             if (check.equals(position)){
                                                 return true;
                                             }
@@ -109,23 +112,32 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-//        if (isInCheck(teamColor)){
-//            for (int i = 1; i < 9; i++) {
-//                for (int j = 1; j < 9; j++) {
-//                    ChessPosition position = new ChessPosition(i, j);
-//                    ChessPiece piece = board.getPiece(position);
-//                    if (!isNull(piece)) {
-//                        if (piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == teamColor) {
-//                            Collection<ChessMove> moves = piece.pieceMoves(board, position);
-//                            for (ChessMove move : moves){
-//
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-        return false;
+        int counter = 0;
+        ChessBoard original = this.board.deepCopy();
+        if (isInCheck(teamColor)){
+            for (int i = 1; i < 9; i++) {
+                for (int j = 1; j < 9; j ++) {
+                    ChessPosition pos = new ChessPosition(i, j);
+                    ChessPiece piece = this.board.getPiece(pos);
+                    if (!isNull(piece)){
+                        if (piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == teamColor){
+                            Collection<ChessMove> kingMoves = piece.pieceMoves(this.board, pos);
+                            for (ChessMove move : kingMoves){
+                                ChessPosition newPos = move.getEndPosition();
+                                this.board.board[i-1][j-1] = null;
+                                this.board.addPiece(newPos, new ChessPiece(teamColor, ChessPiece.PieceType.KING));
+                                if (!isInCheck(teamColor)){
+                                    return false;
+                                } else {
+                                    this.board = original.deepCopy();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else {return false;}
+        return true;
     }
 
     /**
@@ -156,5 +168,7 @@ public class ChessGame {
     public ChessBoard getBoard() {
         return this.board;
     }
+
+
 
 }

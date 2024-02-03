@@ -52,7 +52,7 @@ public class ChessPiece {
                 ChessPiece obstacle = board.getPiece(pos);
                 if (isNull(obstacle)){
                     moves.add(new ChessMove(myPosition, pos, null));
-                } else if (obstacle.color != color){
+                } else if (obstacle.getTeamColor() != color){
                     moves.add(new ChessMove(myPosition, pos, null));
                     break;
                 } else {break;}
