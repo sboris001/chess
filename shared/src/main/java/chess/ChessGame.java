@@ -78,8 +78,12 @@ public class ChessGame {
         ChessPosition start = move.getStartPosition();
         ChessPosition end = move.getEndPosition();
         ChessPiece.PieceType promo = move.getPromotionPiece();
-        ChessPiece piece = this.board.getPiece(start);
 
+        if (start.getRow() < 1 || start.getRow() > 8 || start.getColumn() < 1 || start.getColumn() > 8 || end.getColumn() < 1 || end.getColumn() > 8 || end.getRow() < 1 || end.getRow() > 8){
+            throw new InvalidMoveException("Out of bounds");
+        }
+
+        ChessPiece piece = this.board.getPiece(start);
         if (validMoves(start).contains(move)){
             this.board.addPiece(start, null);
 

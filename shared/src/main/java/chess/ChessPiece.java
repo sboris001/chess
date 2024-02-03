@@ -175,17 +175,20 @@ public class ChessPiece {
                             }else{moves.add(new ChessMove(myPosition, new ChessPosition(row + 1, col), null));}
                         }
                         for (ChessPosition pos : whiteTakes){
-                            ChessPiece obs = board.getPiece(pos);
-                            if (!isNull(obs)){
-                                if (obs.color != color){
-                                    if (Arrays.asList(whitePromo).contains(pos)){
-                                        moves.add(new ChessMove(myPosition, pos, PieceType.QUEEN));
-                                        moves.add(new ChessMove(myPosition, pos, PieceType.ROOK));
-                                        moves.add(new ChessMove(myPosition, pos, PieceType.BISHOP));
-                                        moves.add(new ChessMove(myPosition, pos, PieceType.KNIGHT));
-                                    }else{moves.add(new ChessMove(myPosition, pos, null));}
+                            if (pos.getColumn() > 0 && pos.getColumn() < 9){
+                                ChessPiece obs = board.getPiece(pos);
+                                if (!isNull(obs)){
+                                    if (obs.color != color){
+                                        if (Arrays.asList(whitePromo).contains(pos)){
+                                            moves.add(new ChessMove(myPosition, pos, PieceType.QUEEN));
+                                            moves.add(new ChessMove(myPosition, pos, PieceType.ROOK));
+                                            moves.add(new ChessMove(myPosition, pos, PieceType.BISHOP));
+                                            moves.add(new ChessMove(myPosition, pos, PieceType.KNIGHT));
+                                        }else{moves.add(new ChessMove(myPosition, pos, null));}
+                                    }
                                 }
                             }
+
                         }
                     }
                 }
@@ -203,15 +206,17 @@ public class ChessPiece {
                             }else{moves.add(new ChessMove(myPosition, new ChessPosition(row - 1, col), null));}
                         }
                         for (ChessPosition pos : blackTakes){
-                            ChessPiece obs = board.getPiece(pos);
-                            if (!isNull(obs)){
-                                if (obs.color != color){
-                                    if (Arrays.asList(blackPromo).contains(pos)){
-                                        moves.add(new ChessMove(myPosition, pos, PieceType.QUEEN));
-                                        moves.add(new ChessMove(myPosition, pos, PieceType.ROOK));
-                                        moves.add(new ChessMove(myPosition, pos, PieceType.BISHOP));
-                                        moves.add(new ChessMove(myPosition, pos, PieceType.KNIGHT));
-                                    }else{moves.add(new ChessMove(myPosition, pos, null));}
+                            if (pos.getColumn() > 0 && pos.getColumn() < 9){
+                                ChessPiece obs = board.getPiece(pos);
+                                if (!isNull(obs)){
+                                    if (obs.color != color){
+                                        if (Arrays.asList(blackPromo).contains(pos)){
+                                            moves.add(new ChessMove(myPosition, pos, PieceType.QUEEN));
+                                            moves.add(new ChessMove(myPosition, pos, PieceType.ROOK));
+                                            moves.add(new ChessMove(myPosition, pos, PieceType.BISHOP));
+                                            moves.add(new ChessMove(myPosition, pos, PieceType.KNIGHT));
+                                        }else{moves.add(new ChessMove(myPosition, pos, null));}
+                                    }
                                 }
                             }
                         }
@@ -235,5 +240,13 @@ public class ChessPiece {
     @Override
     public int hashCode() {
         return Objects.hash(color, type);
+    }
+
+    @Override
+    public String toString() {
+        return "ChessPiece{" +
+                "color=" + color +
+                ", type=" + type +
+                '}';
     }
 }
