@@ -13,7 +13,7 @@ import static java.util.Objects.isNull;
  */
 public class ChessGame {
     ChessBoard board = new ChessBoard();
-    TeamColor turn;
+    TeamColor turn = TeamColor.WHITE;
     public ChessGame() {
 
     }
@@ -82,15 +82,26 @@ public class ChessGame {
         if (start.getRow() < 1 || start.getRow() > 8 || start.getColumn() < 1 || start.getColumn() > 8 || end.getColumn() < 1 || end.getColumn() > 8 || end.getRow() < 1 || end.getRow() > 8){
             throw new InvalidMoveException("Out of bounds");
         }
-
         ChessPiece piece = this.board.getPiece(start);
+        if (piece.getTeamColor() != turn){
+            throw new InvalidMoveException("Not your turn");
+        }
         if (validMoves(start).contains(move)){
             this.board.addPiece(start, null);
-
             if (isNull(promo)){
                 this.board.addPiece(end, piece);
+                if (this.getTeamTurn() == TeamColor.WHITE){
+                    setTeamTurn(TeamColor.BLACK);
+                } else {
+                    setTeamTurn(TeamColor.WHITE);
+                }
             } else {
                 this.board.addPiece(end, new ChessPiece(piece.getTeamColor(), promo));
+                if (this.getTeamTurn() == TeamColor.WHITE){
+                    setTeamTurn(TeamColor.BLACK);
+                } else {
+                    setTeamTurn(TeamColor.WHITE);
+                }
             }
         } else {
             throw new InvalidMoveException("Not a valid move");
