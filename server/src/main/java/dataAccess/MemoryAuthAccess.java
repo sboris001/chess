@@ -21,4 +21,9 @@ public class MemoryAuthAccess implements AuthAccess{
     public void clearAuths() throws DataAccessException {
         auths.clear();
     }
+
+    @Override
+    public void deleteAuth(String authToken) throws DataAccessException {
+        auths.remove(authToken);
+    }
 }
