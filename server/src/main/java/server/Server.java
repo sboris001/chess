@@ -1,16 +1,11 @@
 package server;
 
-import com.google.gson.Gson;
-import dataAccess.MemoryAuthAccess;
-import dataAccess.MemoryGameAccess;
-import dataAccess.MemoryUserAccess;
-import model.UserData;
 import spark.*;
 
-import java.util.ArrayList;
 
 public class Server {
     ClearHandler clear = new ClearHandler();
+    RegisterHandler register = new RegisterHandler();
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -18,7 +13,8 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
-        Spark.delete("/db", clear::handle);
+        Spark.delete("/db", clear);
+        Spark.post("/user", register);
 
         Spark.awaitInitialization();
         return Spark.port();
