@@ -18,7 +18,7 @@ public class MemoryAuthAccess implements AuthAccess{
     }
 
     @Override
-    public void deleteAuth() throws DataAccessException {
+    public void clearAuths() throws DataAccessException {
         auths.clear();
     }
 }
