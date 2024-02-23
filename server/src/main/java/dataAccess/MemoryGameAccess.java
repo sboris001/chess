@@ -3,12 +3,13 @@ package dataAccess;
 import model.GameData;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MemoryGameAccess implements GameAccess {
-
+    ArrayList<GameData> games = new ArrayList<>();
     @Override
-    public GameData createGame(GameData game) throws DataAccessException {
-        return null;
+    public void createGame(GameData game) throws DataAccessException {
+        games.add(game);
     }
 
     @Override
