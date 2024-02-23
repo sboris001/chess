@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class MemoryUserAccess implements UserAccess {
 
-    ArrayList<UserData> users = new ArrayList<>();
+    public static ArrayList<UserData> users = new ArrayList<>();
 
     @Override
     public void clearUsers() throws DataAccessException {
