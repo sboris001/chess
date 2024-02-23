@@ -1,5 +1,7 @@
 package server;
 
+import com.google.gson.Gson;
+import model.UserData;
 import spark.*;
 
 import java.util.ArrayList;
@@ -12,13 +14,11 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
-        // Spark.post("/user", this::registrationHandler);
+        // Spark.post("/user", this::register);
 
         Spark.awaitInitialization();
         return Spark.port();
     }
-
-
 
     public void stop() {
         Spark.stop();
