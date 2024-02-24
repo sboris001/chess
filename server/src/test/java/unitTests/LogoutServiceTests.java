@@ -1,17 +1,11 @@
 package unitTests;
 
-import chess.ChessGame;
 import dataAccess.DataAccessException;
 import dataAccess.MemoryAuthAccess;
-import dataAccess.MemoryGameAccess;
-import dataAccess.MemoryUserAccess;
 import exceptions.Unauthorized;
 import model.AuthData;
-import model.GameData;
 import model.LogoutUser;
-import model.UserData;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.LogoutService;
