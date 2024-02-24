@@ -22,16 +22,16 @@ public class LogoutServiceTests {
 
     @Test
     public void worksAssertion() throws Unauthorized, DataAccessException {
-        LogoutUser auth = new LogoutUser("TestToken");
+        String auth = "TestToken";
         LogoutService logout = new LogoutService();
         logout.logout(auth);
 
-        Assertions.assertTrue(isNull(MemoryAuthAccess.auths.get(auth.authToken())));
+        Assertions.assertTrue(isNull(MemoryAuthAccess.auths.get(auth)));
     }
 
     @Test
     public void failsAssertion() throws Unauthorized, DataAccessException {
-        LogoutUser auth = new LogoutUser("BadToken");
+        String auth = "BadToken";
         LogoutService logout = new LogoutService();
         Unauthorized thrown = Assertions.assertThrows(Unauthorized.class, () -> logout.logout(auth));
 

@@ -9,12 +9,11 @@ import static java.util.Objects.isNull;
 
 public class LogoutService {
     MemoryAuthAccess authDB = new MemoryAuthAccess();
-    public void logout(LogoutUser auth) throws DataAccessException, Unauthorized {
-        String authToken = auth.authToken();
-        if (isNull(authDB.getAuth(authToken))) {
+    public void logout(String auth) throws DataAccessException, Unauthorized {
+        if (isNull(authDB.getAuth(auth))) {
             throw new Unauthorized("Error: unauthorized");
         } else {
-            authDB.deleteAuth(authToken);
+            authDB.deleteAuth(auth);
         }
     }
 }
