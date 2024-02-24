@@ -22,26 +22,29 @@ public class JoinGameService {
 
         String playerColor = player.playerColor();
         Integer gameID = player.gameID();
-        if (isNull(gameDB.getGame(gameID))) {
+        GameData game = gameDB.getGame(gameID);
+        if (isNull(game)) {
             throw new BadRequest("Error: bad request");
         }
         if (!isNull(playerColor)){
-            if (playerColor.equals("WHITE") && !isNull(gameDB.getGame(gameID).whiteUsername())) {
+            if (playerColor.equals("WHITE") && !isNull(game.whiteUsername())) {
                 throw new AlreadyTaken("Error: already taken");
             } else {
                 if (playerColor.equals("WHITE")){
-                    GameData updatedGame = new GameData(gameID, username, gameDB.getGame(gameID).blackUsername(),gameDB.getGame(gameID).gameName(),gameDB.getGame(gameID).game());
+                    GameData updatedGame = new GameData(gameID, username, game.blackUsername(),game.gameName(),game.game());
                     gameDB.updateGame(gameID, updatedGame);
                 }
             }
-            if (playerColor.equals("BLACK") && !isNull(gameDB.getGame(gameID).blackUsername())) {
+            if (playerColor.equals("BLACK") && !isNull(game.blackUsername())) {
                 throw new AlreadyTaken("Error: already taken");
             } else {
                 if (playerColor.equals("BLACK")){
-                    GameData updatedGame = new GameData(gameID, gameDB.getGame(gameID).whiteUsername(), username,gameDB.getGame(gameID).gameName(),gameDB.getGame(gameID).game());
+                    GameData updatedGame = new GameData(gameID, game.whiteUsername(), username,game.gameName(),game.game());
                     gameDB.updateGame(gameID, updatedGame);
                 }
             }
+        } else {
+            //Add observers later
         }
 
     }
