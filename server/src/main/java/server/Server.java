@@ -10,6 +10,7 @@ public class Server {
     LogoutHandler logout = new LogoutHandler();
     CreateGameHandler createGame = new CreateGameHandler();
     JoinGameHandler joinGame = new JoinGameHandler();
+    ListGamesHandler listGames = new ListGamesHandler();
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -23,6 +24,7 @@ public class Server {
         Spark.delete("/session", logout);
         Spark.post("/game", createGame);
         Spark.put("/game", joinGame);
+        Spark.get("/game", listGames);
 
 
         Spark.awaitInitialization();
