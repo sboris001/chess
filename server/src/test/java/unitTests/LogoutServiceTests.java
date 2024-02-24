@@ -18,7 +18,6 @@ public class LogoutServiceTests {
     public void fillDB() throws DataAccessException {
         MemoryAuthAccess auths = new MemoryAuthAccess();
         auths.createAuth(new AuthData("Spencer", "TestToken"));
-
     }
 
     @Test
