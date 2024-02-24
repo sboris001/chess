@@ -7,6 +7,7 @@ public class Server {
     ClearHandler clear = new ClearHandler();
     RegisterHandler register = new RegisterHandler();
     LoginHandler login = new LoginHandler();
+    LogoutHandler logout = new LogoutHandler();
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
