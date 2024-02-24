@@ -3,13 +3,10 @@ package server;
 import com.google.gson.Gson;
 import exceptions.Unauthorized;
 import model.FailureMessage;
-import model.LogoutUser;
 import service.LogoutService;
 import spark.Request;
 import spark.Response;
 import spark.Route;
-
-import java.io.Reader;
 
 public class LogoutHandler implements Route {
     LogoutService logout = new LogoutService();

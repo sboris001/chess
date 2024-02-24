@@ -8,6 +8,7 @@ public class Server {
     RegisterHandler register = new RegisterHandler();
     LoginHandler login = new LoginHandler();
     LogoutHandler logout = new LogoutHandler();
+    CreateGameHandler createGame = new CreateGameHandler();
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -19,6 +20,7 @@ public class Server {
         Spark.post("/user", register);
         Spark.post("/session", login);
         Spark.delete("/session", logout);
+        Spark.post("/game", createGame);
 
 
         Spark.awaitInitialization();

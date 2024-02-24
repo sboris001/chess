@@ -4,7 +4,6 @@ import dataAccess.DataAccessException;
 import dataAccess.MemoryAuthAccess;
 import exceptions.Unauthorized;
 import model.AuthData;
-import model.LogoutUser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -3,7 +3,6 @@ package service;
 import dataAccess.DataAccessException;
 import dataAccess.MemoryAuthAccess;
 import exceptions.Unauthorized;
-import model.LogoutUser;
 
 import static java.util.Objects.isNull;
 
