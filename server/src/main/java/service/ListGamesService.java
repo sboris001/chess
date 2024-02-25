@@ -1,8 +1,6 @@
 package service;
 
-import dataAccess.DataAccessException;
-import dataAccess.MemoryAuthAccess;
-import dataAccess.MemoryGameAccess;
+import dataAccess.*;
 import exceptions.Unauthorized;
 import model.GameData;
 import model.ListGames;
@@ -12,8 +10,8 @@ import java.util.ArrayList;
 import static java.util.Objects.isNull;
 
 public class ListGamesService {
-    MemoryGameAccess gameDB = new MemoryGameAccess();
-    MemoryAuthAccess authDB = new MemoryAuthAccess();
+    GameAccess gameDB = new MemoryGameAccess();
+    AuthAccess authDB = new MemoryAuthAccess();
     public ListGames listGames(String authToken) throws Unauthorized, DataAccessException {
         if (isNull(authDB.getAuth(authToken))) {
             throw new Unauthorized("Error: unauthorized");

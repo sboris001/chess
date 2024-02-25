@@ -1,8 +1,6 @@
 package service;
 
-import dataAccess.DataAccessException;
-import dataAccess.MemoryAuthAccess;
-import dataAccess.MemoryUserAccess;
+import dataAccess.*;
 import exceptions.Unauthorized;
 import model.AuthData;
 import model.LoginUser;
@@ -13,8 +11,8 @@ import java.util.UUID;
 import static java.util.Objects.isNull;
 
 public class LoginService {
-    MemoryAuthAccess authDB = new MemoryAuthAccess();
-    MemoryUserAccess userDB = new MemoryUserAccess();
+    AuthAccess authDB = new MemoryAuthAccess();
+    UserAccess userDB = new MemoryUserAccess();
 
     public AuthData login(LoginUser user) throws DataAccessException, Unauthorized {
         String username = user.username();

@@ -1,14 +1,11 @@
 package service;
 
-import dataAccess.DataAccessException;
-import dataAccess.MemoryUserAccess;
-import dataAccess.MemoryGameAccess;
-import dataAccess.MemoryAuthAccess;
+import dataAccess.*;
 
 public class ClearService {
-    MemoryAuthAccess authDB = new MemoryAuthAccess();
-    MemoryUserAccess userDB = new MemoryUserAccess();
-    MemoryGameAccess gameDB = new MemoryGameAccess();
+    AuthAccess authDB = new MemoryAuthAccess();
+    UserAccess userDB = new MemoryUserAccess();
+    GameAccess gameDB = new MemoryGameAccess();
     public void clearDB() throws DataAccessException {
         authDB.clearAuths();
         userDB.clearUsers();

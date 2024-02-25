@@ -1,9 +1,7 @@
 package service;
 
 import chess.ChessGame;
-import dataAccess.DataAccessException;
-import dataAccess.MemoryAuthAccess;
-import dataAccess.MemoryGameAccess;
+import dataAccess.*;
 import exceptions.BadRequest;
 import exceptions.Unauthorized;
 import model.CreateGameObj;
@@ -14,8 +12,8 @@ import static java.util.Objects.isNull;
 
 public class CreateGameService {
     int gameID = 1;
-    MemoryGameAccess games = new MemoryGameAccess();
-    MemoryAuthAccess authDB = new MemoryAuthAccess();
+    GameAccess games = new MemoryGameAccess();
+    AuthAccess authDB = new MemoryAuthAccess();
     public GameID makeGame(String authToken, CreateGameObj game) throws Unauthorized, DataAccessException, BadRequest {
         if (isNull(authDB.getAuth(authToken))) {
             throw new Unauthorized("Error: unauthorized");
