@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import exceptions.AlreadyTaken;
 import exceptions.BadRequest;
 import exceptions.Unauthorized;
-import model.AuthData;
 import model.FailureMessage;
 import model.JoinGame;
 import service.JoinGameService;
