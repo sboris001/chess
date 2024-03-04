@@ -3,6 +3,7 @@ package service;
 import dataAccess.*;
 import exceptions.AlreadyTaken;
 import exceptions.BadRequest;
+import exceptions.ResponseException;
 import exceptions.Unauthorized;
 import model.GameData;
 import model.JoinGame;
@@ -12,7 +13,7 @@ import static java.util.Objects.isNull;
 public class JoinGameService {
     AuthAccess authDB = new MemoryAuthAccess();
     GameAccess gameDB = new MemoryGameAccess();
-    public void joinGame(String authToken, JoinGame player) throws Unauthorized, DataAccessException, BadRequest, AlreadyTaken {
+    public void joinGame(String authToken, JoinGame player) throws Unauthorized, DataAccessException, BadRequest, AlreadyTaken, ResponseException {
         if (isNull(authDB.getAuth(authToken))) {
             throw new Unauthorized("Error: unauthorized");
         }

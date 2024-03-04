@@ -38,7 +38,7 @@ public class ListGamesServiceTests {
     }
 
     @Test
-    public void worksAssertion() throws DataAccessException, Unauthorized {
+    public void worksAssertion() throws DataAccessException, Unauthorized, ResponseException {
         MemoryGameAccess games = new MemoryGameAccess();
         ListGamesService listGames = new ListGamesService();
         String authToken = "Authorized";

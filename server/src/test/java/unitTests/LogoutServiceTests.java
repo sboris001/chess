@@ -2,6 +2,7 @@ package unitTests;
 
 import dataAccess.DataAccessException;
 import dataAccess.MemoryAuthAccess;
+import exceptions.ResponseException;
 import exceptions.Unauthorized;
 import model.AuthData;
 import org.junit.jupiter.api.Assertions;
@@ -20,7 +21,7 @@ public class LogoutServiceTests {
     }
 
     @Test
-    public void worksAssertion() throws Unauthorized, DataAccessException {
+    public void worksAssertion() throws Unauthorized, DataAccessException, ResponseException {
         String auth = "TestToken";
         LogoutService logout = new LogoutService();
         logout.logout(auth);

@@ -3,6 +3,7 @@ package service;
 import chess.ChessGame;
 import dataAccess.*;
 import exceptions.BadRequest;
+import exceptions.ResponseException;
 import exceptions.Unauthorized;
 import model.CreateGameObj;
 import model.GameData;
@@ -14,7 +15,7 @@ public class CreateGameService {
     int gameID = 1;
     GameAccess games = new MemoryGameAccess();
     AuthAccess authDB = new MemoryAuthAccess();
-    public GameID makeGame(String authToken, CreateGameObj game) throws Unauthorized, DataAccessException, BadRequest {
+    public GameID makeGame(String authToken, CreateGameObj game) throws Unauthorized, DataAccessException, BadRequest, ResponseException {
         if (isNull(authDB.getAuth(authToken))) {
             throw new Unauthorized("Error: unauthorized");
         }

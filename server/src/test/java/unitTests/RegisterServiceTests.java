@@ -37,7 +37,6 @@ public class RegisterServiceTests {
         RegisterService register = new RegisterService();
         UserData newUser = new UserData("Spencer", "Password", "Spencer@email.com");
         AlreadyTaken thrown = Assertions.assertThrows(AlreadyTaken.class, () -> register.registerUser(newUser));
-
         Assertions.assertEquals("Error: already taken", thrown.getMessage());
     }
 

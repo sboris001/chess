@@ -4,6 +4,7 @@ import dataAccess.DataAccessException;
 import dataAccess.MemoryAuthAccess;
 import dataAccess.MemoryGameAccess;
 import exceptions.BadRequest;
+import exceptions.ResponseException;
 import exceptions.Unauthorized;
 import model.AuthData;
 import model.CreateGameObj;
@@ -20,7 +21,7 @@ public class CreateGameServiceTests {
     }
 
     @Test
-    public void worksAssertion() throws BadRequest, DataAccessException, Unauthorized {
+    public void worksAssertion() throws BadRequest, DataAccessException, Unauthorized, ResponseException {
         CreateGameService createGame = new CreateGameService();
         String authToken = "Authorized";
         CreateGameObj game = new CreateGameObj("Game 1");

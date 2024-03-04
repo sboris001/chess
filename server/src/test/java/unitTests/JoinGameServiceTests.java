@@ -29,7 +29,7 @@ public class JoinGameServiceTests {
     }
 
     @Test
-    public void worksAssertion() throws BadRequest, DataAccessException, Unauthorized, AlreadyTaken {
+    public void worksAssertion() throws BadRequest, DataAccessException, Unauthorized, AlreadyTaken, ResponseException {
         MemoryGameAccess games = new MemoryGameAccess();
         JoinGameService joinGame = new JoinGameService();
         String authToken = "Authorized";
