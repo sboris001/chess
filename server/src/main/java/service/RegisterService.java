@@ -26,13 +26,15 @@ public class RegisterService {
     public AuthData registerUser(UserData user) throws DataAccessException, AlreadyTaken, BadRequest, ResponseException {
         String username = user.username();
         if (isNull(userDB.getUser(username))) {
-            userDB.addUser(user);
+            if (isNull(user.username()) || isNull(user.password()) || isNull(user.email())) {
+                throw new BadRequest("Error: bad request");
+            } else {
+                userDB.addUser(user);
+            }
         } else {
             throw new AlreadyTaken("Error: already taken");
         }
-        if (isNull(user.username()) || isNull(user.password()) || isNull(user.email())) {
-            throw new BadRequest("Error: bad request");
-        }
+
 
         String authToken = UUID.randomUUID().toString();
         AuthData authorization = new AuthData(username, authToken);
