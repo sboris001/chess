@@ -76,7 +76,7 @@ public class SQLUserAccess implements UserAccess{
 
     @Override
     public void addUser(UserData user) throws DataAccessException, ResponseException {
-        var statement = "INSERT INTO users (name, type, email, json) VALUES (?, ?, ?, ?)";
+        var statement = "INSERT INTO users (username, password, email, json) VALUES (?, ?, ?, ?)";
         var json = new Gson().toJson(user);
         executeUpdate(statement, user.username(), user.password(), user.email(), json);
     }
