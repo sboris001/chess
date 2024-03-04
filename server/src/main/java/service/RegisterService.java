@@ -13,7 +13,17 @@ import static java.util.Objects.isNull;
 
 public class RegisterService {
     AuthAccess authDB = new MemoryAuthAccess();
-    UserAccess userDB = new MemoryUserAccess();
+    UserAccess userDB;
+
+    public RegisterService() {
+        try {
+            userDB = new SQLUserAccess();
+            System.out.println("SQL");
+        } catch (DataAccessException | ResponseException e) {
+            userDB = new MemoryUserAccess();
+            System.out.println("Memory");
+        }
+    }
     public AuthData registerUser(UserData user) throws DataAccessException, AlreadyTaken, BadRequest, ResponseException {
         String username = user.username();
         if (isNull(userDB.getUser(username))) {
