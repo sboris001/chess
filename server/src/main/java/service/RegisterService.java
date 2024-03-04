@@ -18,10 +18,8 @@ public class RegisterService {
     public RegisterService() {
         try {
             userDB = new SQLUserAccess();
-            System.out.println("SQL");
         } catch (DataAccessException | ResponseException e) {
-            userDB = new MemoryUserAccess();
-            System.out.println("Memory");
+            System.out.println(e.getMessage());
         }
     }
     public AuthData registerUser(UserData user) throws DataAccessException, AlreadyTaken, BadRequest, ResponseException {
