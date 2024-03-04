@@ -4,6 +4,7 @@ import dataAccess.DataAccessException;
 import dataAccess.MemoryUserAccess;
 import exceptions.AlreadyTaken;
 import exceptions.BadRequest;
+import exceptions.ResponseException;
 import model.UserData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -19,13 +20,13 @@ public class RegisterServiceTests {
         users.addUser(new UserData("Spencer", "Password", "Spencer@email.com"));
     }
     @AfterEach
-    public void reset() throws DataAccessException {
+    public void reset() throws DataAccessException, ResponseException {
         ClearService clear = new ClearService();
         clear.clearDB();
     }
 
     @Test
-    public void worksAssertion() throws BadRequest, AlreadyTaken, DataAccessException {
+    public void worksAssertion() throws BadRequest, AlreadyTaken, DataAccessException, ResponseException {
         RegisterService register = new RegisterService();
         UserData newUser = new UserData("John", "pass", "John@email.com");
         register.registerUser(newUser);

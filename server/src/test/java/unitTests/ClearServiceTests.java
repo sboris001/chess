@@ -4,6 +4,7 @@ import dataAccess.DataAccessException;
 import dataAccess.MemoryAuthAccess;
 import dataAccess.MemoryGameAccess;
 import dataAccess.MemoryUserAccess;
+import exceptions.ResponseException;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
@@ -25,7 +26,7 @@ public class ClearServiceTests {
     }
 
     @Test
-    public void simpleAssertionTest() throws DataAccessException {
+    public void simpleAssertionTest() throws DataAccessException, ResponseException {
         ClearService clear = new ClearService();
         clear.clearDB();
 

@@ -7,6 +7,7 @@ import dataAccess.MemoryAuthAccess;
 import dataAccess.MemoryGameAccess;
 import exceptions.AlreadyTaken;
 import exceptions.BadRequest;
+import exceptions.ResponseException;
 import exceptions.Unauthorized;
 import model.AuthData;
 import model.GameData;
@@ -31,7 +32,7 @@ public class ListGamesServiceTests {
         games.createGame(new GameData(3, null, null, "Game 3", new ChessGame()));
     }
     @AfterEach
-    public void clear() throws DataAccessException {
+    public void clear() throws DataAccessException, ResponseException {
         ClearService clear = new ClearService();
         clear.clearDB();
     }

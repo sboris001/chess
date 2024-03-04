@@ -1,6 +1,7 @@
 package service;
 
 import dataAccess.*;
+import exceptions.ResponseException;
 import exceptions.Unauthorized;
 import model.AuthData;
 import model.LoginUser;
@@ -14,7 +15,7 @@ public class LoginService {
     AuthAccess authDB = new MemoryAuthAccess();
     UserAccess userDB = new MemoryUserAccess();
 
-    public AuthData login(LoginUser user) throws DataAccessException, Unauthorized {
+    public AuthData login(LoginUser user) throws DataAccessException, Unauthorized, ResponseException {
         String username = user.username();
         if (!isNull(userDB.getUser(username))) {
             UserData storedUser = userDB.getUser(username);

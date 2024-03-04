@@ -3,6 +3,7 @@ package unitTests;
 import dataAccess.DataAccessException;
 import dataAccess.MemoryAuthAccess;
 import dataAccess.MemoryUserAccess;
+import exceptions.ResponseException;
 import exceptions.Unauthorized;
 import model.AuthData;
 import model.LoginUser;
@@ -25,7 +26,7 @@ public class LoginServiceTests {
     }
 
     @Test
-    public void worksAssertion() throws Unauthorized, DataAccessException {
+    public void worksAssertion() throws Unauthorized, DataAccessException, ResponseException {
         LoginService login = new LoginService();
         LoginUser user = new LoginUser("Spencer", "Password");
         AuthData authorization = login.login(user);

@@ -6,6 +6,7 @@ import dataAccess.MemoryAuthAccess;
 import dataAccess.MemoryGameAccess;
 import exceptions.AlreadyTaken;
 import exceptions.BadRequest;
+import exceptions.ResponseException;
 import exceptions.Unauthorized;
 import model.*;
 import org.junit.jupiter.api.*;
@@ -22,7 +23,7 @@ public class JoinGameServiceTests {
         games.createGame(new GameData(1, null, null, "Game 1", new ChessGame()));
     }
     @AfterEach
-    public void clear() throws DataAccessException {
+    public void clear() throws DataAccessException, ResponseException {
         ClearService clear = new ClearService();
         clear.clearDB();
     }
