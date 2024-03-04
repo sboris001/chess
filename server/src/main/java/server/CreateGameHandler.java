@@ -1,7 +1,9 @@
 package server;
 
 import com.google.gson.Gson;
+import dataAccess.DataAccessException;
 import exceptions.BadRequest;
+import exceptions.ResponseException;
 import exceptions.Unauthorized;
 import model.CreateGameObj;
 import model.FailureMessage;
@@ -13,6 +15,10 @@ import spark.Route;
 
 public class CreateGameHandler implements Route {
     CreateGameService createGame = new CreateGameService();
+
+    public CreateGameHandler() throws ResponseException, DataAccessException {
+    }
+
     @Override
     public Object handle(Request request, Response response) throws Exception {
         Gson serializer = new Gson();

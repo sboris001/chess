@@ -1,6 +1,8 @@
 package server;
 
 import com.google.gson.Gson;
+import dataAccess.DataAccessException;
+import exceptions.ResponseException;
 import exceptions.Unauthorized;
 import model.AuthData;
 import model.FailureMessage;
@@ -13,6 +15,10 @@ import spark.Route;
 
 public class LoginHandler implements Route {
     LoginService login = new LoginService();
+
+    public LoginHandler() throws ResponseException, DataAccessException {
+    }
+
     @Override
     public Object handle(Request request, Response response) throws Exception {
         Gson serializer = new Gson();

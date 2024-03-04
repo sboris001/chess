@@ -1,8 +1,10 @@
 package server;
 
 import com.google.gson.Gson;
+import dataAccess.DataAccessException;
 import exceptions.AlreadyTaken;
 import exceptions.BadRequest;
+import exceptions.ResponseException;
 import exceptions.Unauthorized;
 import model.FailureMessage;
 import model.JoinGame;
@@ -13,6 +15,10 @@ import spark.Route;
 
 public class JoinGameHandler implements Route {
     JoinGameService joinGame = new JoinGameService();
+
+    public JoinGameHandler() throws ResponseException, DataAccessException {
+    }
+
     @Override
     public Object handle(Request request, Response response) throws Exception {
         String authToken = request.headers("authorization");

@@ -47,7 +47,7 @@ public class ListGamesServiceTests {
         Assertions.assertEquals(list.games(), games.listGames());
     }
     @Test
-    public void unauthorizedAssertion() throws Unauthorized, DataAccessException {
+    public void unauthorizedAssertion() throws Unauthorized, DataAccessException, ResponseException {
         ListGamesService listGames = new ListGamesService();
         String authToken = "Unauthorized";
         Unauthorized thrown = Assertions.assertThrows(Unauthorized.class, () -> listGames.listGames(authToken));

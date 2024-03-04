@@ -33,7 +33,7 @@ public class LoginServiceTests {
         Assertions.assertTrue(MemoryAuthAccess.auths.containsValue(authorization));
     }
     @Test
-    public void unauthorizedAssertion() throws Unauthorized, DataAccessException {
+    public void unauthorizedAssertion() throws Unauthorized, DataAccessException, ResponseException {
         LoginService login = new LoginService();
         LoginUser user = new LoginUser("Spencer", "NotPassword");
         Unauthorized thrown = Assertions.assertThrows(Unauthorized.class, () -> login.login(user));

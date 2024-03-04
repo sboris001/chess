@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import dataAccess.DataAccessException;
 import exceptions.AlreadyTaken;
 import exceptions.BadRequest;
+import exceptions.ResponseException;
 import model.AuthData;
 import model.FailureMessage;
 import model.UserData;
@@ -15,6 +16,10 @@ import spark.Route;
 
 public class RegisterHandler implements Route {
     RegisterService register = new RegisterService();
+
+    public RegisterHandler() throws ResponseException, DataAccessException {
+    }
+
     @Override
     public Object handle(Request request, Response response) throws Exception {
         Gson serializer = new Gson();

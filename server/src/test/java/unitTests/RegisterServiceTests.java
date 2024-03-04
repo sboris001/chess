@@ -33,7 +33,7 @@ public class RegisterServiceTests {
         Assertions.assertTrue(MemoryUserAccess.users.contains(newUser));
     }
     @Test
-    public void alreadyTakenAssertion() throws BadRequest, AlreadyTaken, DataAccessException {
+    public void alreadyTakenAssertion() throws BadRequest, AlreadyTaken, DataAccessException, ResponseException {
         RegisterService register = new RegisterService();
         UserData newUser = new UserData("Spencer", "Password", "Spencer@email.com");
         AlreadyTaken thrown = Assertions.assertThrows(AlreadyTaken.class, () -> register.registerUser(newUser));
@@ -41,7 +41,7 @@ public class RegisterServiceTests {
     }
 
     @Test
-    public void badRequestAssertion() throws BadRequest, AlreadyTaken, DataAccessException {
+    public void badRequestAssertion() throws BadRequest, AlreadyTaken, DataAccessException, ResponseException {
         RegisterService register = new RegisterService();
         UserData newUser = new UserData(null, "Password", "Spencer@email.com");
         BadRequest thrown = Assertions.assertThrows(BadRequest.class, () -> register.registerUser(newUser));

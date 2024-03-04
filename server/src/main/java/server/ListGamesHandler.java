@@ -1,6 +1,8 @@
 package server;
 
 import com.google.gson.Gson;
+import dataAccess.DataAccessException;
+import exceptions.ResponseException;
 import exceptions.Unauthorized;
 import model.FailureMessage;
 import model.ListGames;
@@ -11,6 +13,10 @@ import spark.Route;
 
 public class ListGamesHandler implements Route {
     ListGamesService listGames = new ListGamesService();
+
+    public ListGamesHandler() throws ResponseException, DataAccessException {
+    }
+
     @Override
     public Object handle(Request request, Response response) throws Exception {
         String authToken = request.headers("authorization");

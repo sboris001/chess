@@ -22,7 +22,7 @@ public class SQLGameAccess implements GameAccess{
     private final String[] createStatements = {
             """
             CREATE TABLE IF NOT EXISTS  games (
-              gameID int(256) NOT NULL,
+              gameID int NOT NULL,
               whiteUsername varchar(256),
               blackUsername varchar(256),
               gameName varchar(256),

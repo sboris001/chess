@@ -30,7 +30,7 @@ public class LogoutServiceTests {
     }
 
     @Test
-    public void failsAssertion() throws Unauthorized, DataAccessException {
+    public void failsAssertion() throws Unauthorized, DataAccessException, ResponseException {
         String auth = "BadToken";
         LogoutService logout = new LogoutService();
         Unauthorized thrown = Assertions.assertThrows(Unauthorized.class, () -> logout.logout(auth));

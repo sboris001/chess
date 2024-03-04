@@ -12,10 +12,10 @@ import java.util.UUID;
 import static java.util.Objects.isNull;
 
 public class RegisterService {
-    AuthAccess authDB = new MemoryAuthAccess();
+    AuthAccess authDB = new SQLAuthAccess();
     UserAccess userDB;
 
-    public RegisterService() {
+    public RegisterService() throws ResponseException, DataAccessException {
         try {
             userDB = new SQLUserAccess();
         } catch (DataAccessException | ResponseException e) {

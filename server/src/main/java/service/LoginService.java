@@ -12,8 +12,11 @@ import java.util.UUID;
 import static java.util.Objects.isNull;
 
 public class LoginService {
-    AuthAccess authDB = new MemoryAuthAccess();
-    UserAccess userDB = new MemoryUserAccess();
+    AuthAccess authDB = new SQLAuthAccess();
+    UserAccess userDB = new SQLUserAccess();
+
+    public LoginService() throws ResponseException, DataAccessException {
+    }
 
     public AuthData login(LoginUser user) throws DataAccessException, Unauthorized, ResponseException {
         String username = user.username();

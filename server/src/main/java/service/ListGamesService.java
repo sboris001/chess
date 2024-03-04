@@ -11,8 +11,12 @@ import java.util.ArrayList;
 import static java.util.Objects.isNull;
 
 public class ListGamesService {
-    GameAccess gameDB = new MemoryGameAccess();
-    AuthAccess authDB = new MemoryAuthAccess();
+    GameAccess gameDB = new SQLGameAccess();
+    AuthAccess authDB = new SQLAuthAccess();
+
+    public ListGamesService() throws ResponseException, DataAccessException {
+    }
+
     public ListGames listGames(String authToken) throws Unauthorized, DataAccessException, ResponseException {
         if (isNull(authDB.getAuth(authToken))) {
             throw new Unauthorized("Error: unauthorized");

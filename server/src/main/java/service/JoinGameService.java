@@ -11,8 +11,12 @@ import model.JoinGame;
 import static java.util.Objects.isNull;
 
 public class JoinGameService {
-    AuthAccess authDB = new MemoryAuthAccess();
-    GameAccess gameDB = new MemoryGameAccess();
+    AuthAccess authDB = new SQLAuthAccess();
+    GameAccess gameDB = new SQLGameAccess();
+
+    public JoinGameService() throws ResponseException, DataAccessException {
+    }
+
     public void joinGame(String authToken, JoinGame player) throws Unauthorized, DataAccessException, BadRequest, AlreadyTaken, ResponseException {
         if (isNull(authDB.getAuth(authToken))) {
             throw new Unauthorized("Error: unauthorized");

@@ -13,8 +13,12 @@ import static java.util.Objects.isNull;
 
 public class CreateGameService {
     int gameID = 1;
-    GameAccess games = new MemoryGameAccess();
-    AuthAccess authDB = new MemoryAuthAccess();
+    GameAccess games = new SQLGameAccess();
+    AuthAccess authDB = new SQLAuthAccess();
+
+    public CreateGameService() throws ResponseException, DataAccessException {
+    }
+
     public GameID makeGame(String authToken, CreateGameObj game) throws Unauthorized, DataAccessException, BadRequest, ResponseException {
         if (isNull(authDB.getAuth(authToken))) {
             throw new Unauthorized("Error: unauthorized");

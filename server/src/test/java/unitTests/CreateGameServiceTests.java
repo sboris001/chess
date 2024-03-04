@@ -30,7 +30,7 @@ public class CreateGameServiceTests {
         Assertions.assertTrue(MemoryGameAccess.games.containsKey(gameID.gameID()));
     }
     @Test
-    public void unauthorizedAssertion() throws BadRequest, Unauthorized, DataAccessException {
+    public void unauthorizedAssertion() throws BadRequest, Unauthorized, DataAccessException, ResponseException {
         CreateGameService createGame = new CreateGameService();
         String authToken = "Unauthorized";
         CreateGameObj game = new CreateGameObj("Game 1");
@@ -40,7 +40,7 @@ public class CreateGameServiceTests {
     }
 
     @Test
-    public void badRequestAssertion() throws BadRequest, Unauthorized, DataAccessException {
+    public void badRequestAssertion() throws BadRequest, Unauthorized, DataAccessException, ResponseException {
         CreateGameService createGame = new CreateGameService();
         String authToken = "Authorized";
         CreateGameObj game = new CreateGameObj(null);

@@ -39,7 +39,7 @@ public class JoinGameServiceTests {
         Assertions.assertEquals(games.getGame(1).whiteUsername(), username);
     }
     @Test
-    public void unauthorizedAssertion() throws BadRequest, Unauthorized, DataAccessException, AlreadyTaken {
+    public void unauthorizedAssertion() throws BadRequest, Unauthorized, DataAccessException, AlreadyTaken, ResponseException {
         JoinGameService joinGame = new JoinGameService();
         String authToken = "Unauthorized";
         JoinGame user = new JoinGame("WHITE", 1);
@@ -48,7 +48,7 @@ public class JoinGameServiceTests {
         Assertions.assertEquals("Error: unauthorized", thrown.getMessage());
     }
     @Test
-    public void alreadyTakenAssertion() throws BadRequest, Unauthorized, DataAccessException, AlreadyTaken {
+    public void alreadyTakenAssertion() throws BadRequest, Unauthorized, DataAccessException, AlreadyTaken, ResponseException {
         GameData updatedGame = new GameData(1, "Johnathan", null, "Game 1", new ChessGame());
         MemoryGameAccess games = new MemoryGameAccess();
         games.updateGame(1, updatedGame);
