@@ -1,18 +1,22 @@
 package service;
 
-import dataAccess.AuthAccess;
-import dataAccess.DataAccessException;
-import dataAccess.MemoryAuthAccess;
-import dataAccess.SQLAuthAccess;
+import dataAccess.*;
 import exceptions.ResponseException;
 import exceptions.Unauthorized;
 
 import static java.util.Objects.isNull;
 
 public class LogoutService {
-    AuthAccess authDB = new SQLAuthAccess();
+
+
+    AuthAccess authDB;
 
     public LogoutService() throws ResponseException, DataAccessException {
+        try {
+            authDB = new SQLAuthAccess();
+        } catch (DataAccessException | ResponseException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public void logout(String auth) throws DataAccessException, Unauthorized, ResponseException {

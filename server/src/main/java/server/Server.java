@@ -6,15 +6,30 @@ import spark.*;
 
 
 public class Server {
-    ClearHandler clear = new ClearHandler();
-    RegisterHandler register = new RegisterHandler();
-    LoginHandler login = new LoginHandler();
-    LogoutHandler logout = new LogoutHandler();
-    CreateGameHandler createGame = new CreateGameHandler();
-    JoinGameHandler joinGame = new JoinGameHandler();
-    ListGamesHandler listGames = new ListGamesHandler();
+    ClearHandler clear;
+    RegisterHandler register;
+    LoginHandler login;
+    LogoutHandler logout;
+    CreateGameHandler createGame;
+    JoinGameHandler joinGame;
+    ListGamesHandler listGames;
+    {
+        try {
+            logout = new LogoutHandler();
+            login = new LoginHandler();
+            register = new RegisterHandler();
+            clear = new ClearHandler();
+            createGame = new CreateGameHandler();
+            joinGame = new JoinGameHandler();
+            listGames = new ListGamesHandler();
+        } catch (ResponseException | DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-    public Server() throws ResponseException, DataAccessException {
+
+
+    public Server() {
     }
 
     public int run(int desiredPort) {

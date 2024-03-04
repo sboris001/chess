@@ -11,9 +11,14 @@ import spark.Response;
 import spark.Route;
 
 public class LogoutHandler implements Route {
-    LogoutService logout = new LogoutService();
+    LogoutService logout;
 
     public LogoutHandler() throws ResponseException, DataAccessException {
+        try {
+             logout = new LogoutService();
+        } catch (DataAccessException | ResponseException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @Override

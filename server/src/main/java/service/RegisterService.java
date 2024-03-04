@@ -12,12 +12,13 @@ import java.util.UUID;
 import static java.util.Objects.isNull;
 
 public class RegisterService {
-    AuthAccess authDB = new SQLAuthAccess();
+    AuthAccess authDB;
     UserAccess userDB;
 
-    public RegisterService() throws ResponseException, DataAccessException {
+    public RegisterService() {
         try {
             userDB = new SQLUserAccess();
+            authDB = new SQLAuthAccess();
         } catch (DataAccessException | ResponseException e) {
             System.out.println(e.getMessage());
         }

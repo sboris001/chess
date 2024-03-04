@@ -17,7 +17,7 @@ import spark.Route;
 public class RegisterHandler implements Route {
     RegisterService register = new RegisterService();
 
-    public RegisterHandler() throws ResponseException, DataAccessException {
+    public RegisterHandler() {
     }
 
     @Override

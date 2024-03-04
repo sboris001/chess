@@ -15,6 +15,7 @@ public class JoinGameService {
     GameAccess gameDB = new SQLGameAccess();
 
     public JoinGameService() throws ResponseException, DataAccessException {
+
     }
 
     public void joinGame(String authToken, JoinGame player) throws Unauthorized, DataAccessException, BadRequest, AlreadyTaken, ResponseException {
