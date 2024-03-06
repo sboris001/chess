@@ -80,4 +80,14 @@ public class GameAccessTests {
         ArrayList<GameData> list = games.listGames();
         Assertions.assertEquals(list, new ArrayList<GameData>());
     }
+    // Update Game Tests
+    @Test
+    public void updateGamePositive() throws ResponseException, DataAccessException {
+        GameAccess games = new SQLGameAccess();
+        GameData updatedGame = new GameData(1, "Johnny", null, "Game 1", new ChessGame());
+        games.updateGame(1, updatedGame);
+
+        GameData pulledGame = games.getGame(1);
+        Assertions.assertEquals(pulledGame.whiteUsername(), "Johnny");
+    }
 }
