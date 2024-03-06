@@ -16,14 +16,14 @@ import static java.util.Objects.isNull;
 
 public class CreateGameServiceTests {
 
-    @BeforeAll
-    public static void fillDB() throws DataAccessException, ResponseException {
+    @BeforeEach
+    public void fillDB() throws DataAccessException, ResponseException {
         AuthAccess auth = new SQLAuthAccess();
         auth.createAuth(new AuthData("Spencer", "Authorized"));
     }
 
-    @AfterAll
-    public static void clearDB() throws DataAccessException, ResponseException {
+    @AfterEach
+    public void clearDB() throws DataAccessException, ResponseException {
         ClearService clear = new ClearService();
         clear.clearDB();
     }
