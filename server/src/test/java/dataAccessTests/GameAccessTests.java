@@ -3,7 +3,6 @@ package dataAccessTests;
 import chess.ChessGame;
 import dataAccess.*;
 import exceptions.ResponseException;
-import exceptions.Unauthorized;
 import model.AuthData;
 import model.GameData;
 import org.junit.jupiter.api.AfterEach;
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.ClearService;
-import spark.Response;
 
 import java.util.ArrayList;
 
@@ -100,4 +98,12 @@ public class GameAccessTests {
         GameData pulledGame = games.getGame(100);
         Assertions.assertTrue(isNull(pulledGame));
     }
+    // Clear Games test
+    @Test
+    public void clearGamesPositive() throws ResponseException, DataAccessException {
+        GameAccess games = new SQLGameAccess();
+        games.clearGames();
+        Assertions.assertEquals(games.listGames(), new ArrayList<GameData>());
+    }
+    // No real way to test a negative case for clearing games
 }
