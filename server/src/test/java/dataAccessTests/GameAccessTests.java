@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Test;
 import service.ClearService;
 import spark.Response;
 
+import java.util.ArrayList;
+
 import static java.util.Objects.isNull;
 
 public class GameAccessTests {
@@ -30,7 +32,6 @@ public class GameAccessTests {
         ClearService clear = new ClearService();
         clear.clearDB();
     }
-
     // Create Game Tests
     @Test
     public void createGamePositive() throws ResponseException, DataAccessException {
@@ -48,7 +49,6 @@ public class GameAccessTests {
 
         Assertions.assertEquals("unable to update database: INSERT INTO games (gameID, whiteUsername, blackUsername, gameName, json) VALUES (?, ?, ?, ?, ?), Duplicate entry '1' for key 'games.PRIMARY'", thrown.getMessage());
     }
-
     // Get Game Tests
     @Test
     public void getGamePositive() throws ResponseException, DataAccessException {
@@ -63,5 +63,21 @@ public class GameAccessTests {
         GameAccess games = new SQLGameAccess();
         GameData game = games.getGame(100);
         Assertions.assertTrue(isNull(game));
+    }
+    // List Games Tests
+    @Test
+    public void listGamesPositive() throws ResponseException, DataAccessException {
+        GameAccess games = new SQLGameAccess();
+        ArrayList<GameData> list = games.listGames();
+
+        Assertions.assertEquals(list.size(), 3);
+    }
+    // Try to get the list when no games are in the db.  Should return an empty array
+    @Test
+    public void listGamesNegative() throws ResponseException, DataAccessException {
+        GameAccess games = new SQLGameAccess();
+        games.clearGames();
+        ArrayList<GameData> list = games.listGames();
+        Assertions.assertEquals(list, new ArrayList<GameData>());
     }
 }
