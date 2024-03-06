@@ -1,4 +1,4 @@
-package unitTests;
+package serviceTests;
 
 import dataAccess.DataAccessException;
 import dataAccess.SQLAuthAccess;

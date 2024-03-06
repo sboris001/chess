@@ -1,9 +1,6 @@
-package unitTests;
+package serviceTests;
 import chess.ChessGame;
-import dataAccess.DataAccessException;
-import dataAccess.MemoryAuthAccess;
-import dataAccess.MemoryGameAccess;
-import dataAccess.MemoryUserAccess;
+import dataAccess.*;
 import exceptions.ResponseException;
 import model.AuthData;
 import model.GameData;
@@ -15,10 +12,10 @@ import service.ClearService;
 
 public class ClearServiceTests {
     @BeforeAll
-    public static void fillDB() throws DataAccessException {
-        MemoryUserAccess users = new MemoryUserAccess();
-        MemoryGameAccess games = new MemoryGameAccess();
-        MemoryAuthAccess auths = new MemoryAuthAccess();
+    public static void fillDB() throws DataAccessException, ResponseException {
+        UserAccess users = new SQLUserAccess();
+        GameAccess games = new SQLGameAccess();
+        AuthAccess auths = new SQLAuthAccess();
 
         users.addUser(new UserData("Spencer", "password", "spencer@email.com"));
         games.createGame(new GameData(1, "Spencer", "Jaden", "Friendly game", new ChessGame()));

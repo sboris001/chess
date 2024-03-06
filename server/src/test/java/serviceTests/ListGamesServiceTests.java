@@ -1,31 +1,26 @@
-package unitTests;
+package serviceTests;
 
 import chess.ChessGame;
-import com.google.gson.Gson;
-import dataAccess.DataAccessException;
-import dataAccess.MemoryAuthAccess;
-import dataAccess.MemoryGameAccess;
-import exceptions.AlreadyTaken;
-import exceptions.BadRequest;
+import dataAccess.*;
 import exceptions.ResponseException;
 import exceptions.Unauthorized;
 import model.AuthData;
 import model.GameData;
-import model.JoinGame;
 import model.ListGames;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.ClearService;
-import service.JoinGameService;
 import service.ListGamesService;
+
+import java.util.ArrayList;
 
 public class ListGamesServiceTests {
     @BeforeEach
-    public void fillDB() throws DataAccessException {
-        MemoryAuthAccess auths = new MemoryAuthAccess();
-        MemoryGameAccess games = new MemoryGameAccess();
+    public void fillDB() throws DataAccessException, ResponseException {
+        AuthAccess auths = new SQLAuthAccess();
+        GameAccess games = new SQLGameAccess();
         auths.createAuth(new AuthData("Spencer", "Authorized"));
         games.createGame(new GameData(1, null, null, "Game 1", new ChessGame()));
         games.createGame(new GameData(2, null, null, "Game 2", new ChessGame()));
@@ -39,12 +34,12 @@ public class ListGamesServiceTests {
 
     @Test
     public void worksAssertion() throws DataAccessException, Unauthorized, ResponseException {
-        MemoryGameAccess games = new MemoryGameAccess();
+        GameAccess games = new SQLGameAccess();
         ListGamesService listGames = new ListGamesService();
-        String authToken = "Authorized";
-        ListGames list = listGames.listGames(authToken);
+        AuthData auth = new AuthData("Spencer", "Authorized");
+        ArrayList<GameData> list = listGames.listGames(auth.authToken()).games();
+        Assertions.assertEquals(games.listGames().size(), list.size());
 
-        Assertions.assertEquals(list.games(), games.listGames());
     }
     @Test
     public void unauthorizedAssertion() throws Unauthorized, DataAccessException, ResponseException {

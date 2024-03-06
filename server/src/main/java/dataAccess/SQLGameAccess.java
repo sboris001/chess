@@ -109,7 +109,7 @@ public class SQLGameAccess implements GameAccess{
             var statement = "SELECT json FROM games";
             try (var ps = conn.prepareStatement(statement)) {
                 try (var rs = ps.executeQuery()) {
-                    if (rs.next()) {
+                    while (rs.next()) {
                         gameList.add(readGame(rs));
                     }
                 }
@@ -135,4 +135,5 @@ public class SQLGameAccess implements GameAccess{
         var statement = "TRUNCATE games";
         executeUpdate(statement);
     }
+
 }

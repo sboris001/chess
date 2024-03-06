@@ -7,10 +7,7 @@ import exceptions.Unauthorized;
 import static java.util.Objects.isNull;
 
 public class LogoutService {
-
-
     AuthAccess authDB;
-
     public LogoutService() throws ResponseException, DataAccessException {
         try {
             authDB = new SQLAuthAccess();

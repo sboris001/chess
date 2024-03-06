@@ -1,9 +1,7 @@
-package unitTests;
+package serviceTests;
 
 import chess.ChessGame;
-import dataAccess.DataAccessException;
-import dataAccess.MemoryAuthAccess;
-import dataAccess.MemoryGameAccess;
+import dataAccess.*;
 import exceptions.AlreadyTaken;
 import exceptions.BadRequest;
 import exceptions.ResponseException;
@@ -11,14 +9,13 @@ import exceptions.Unauthorized;
 import model.*;
 import org.junit.jupiter.api.*;
 import service.ClearService;
-import service.CreateGameService;
 import service.JoinGameService;
 
 public class JoinGameServiceTests {
     @BeforeEach
-    public void fillDB() throws DataAccessException {
-        MemoryAuthAccess auths = new MemoryAuthAccess();
-        MemoryGameAccess games = new MemoryGameAccess();
+    public void fillDB() throws DataAccessException, ResponseException {
+        AuthAccess auths = new SQLAuthAccess();
+        GameAccess games = new SQLGameAccess();
         auths.createAuth(new AuthData("Spencer", "Authorized"));
         games.createGame(new GameData(1, null, null, "Game 1", new ChessGame()));
     }
@@ -30,7 +27,7 @@ public class JoinGameServiceTests {
 
     @Test
     public void worksAssertion() throws BadRequest, DataAccessException, Unauthorized, AlreadyTaken, ResponseException {
-        MemoryGameAccess games = new MemoryGameAccess();
+        GameAccess games = new SQLGameAccess();
         JoinGameService joinGame = new JoinGameService();
         String authToken = "Authorized";
         String username = "Spencer";
@@ -50,7 +47,7 @@ public class JoinGameServiceTests {
     @Test
     public void alreadyTakenAssertion() throws BadRequest, Unauthorized, DataAccessException, AlreadyTaken, ResponseException {
         GameData updatedGame = new GameData(1, "Johnathan", null, "Game 1", new ChessGame());
-        MemoryGameAccess games = new MemoryGameAccess();
+        GameAccess games = new SQLGameAccess();
         games.updateGame(1, updatedGame);
         JoinGameService joinGame = new JoinGameService();
         String authToken = "Authorized";
