@@ -3,6 +3,7 @@ package dataAccess;
 import com.google.gson.Gson;
 import exceptions.ResponseException;
 import model.UserData;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.sql.*;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
@@ -67,7 +68,18 @@ public class SQLUserAccess implements UserAccess{
     }
 
 
+    public String encryptPassword(String password) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        return encoder.encode(password);
+    }
+    public boolean verifyUser(String username, String providedClearTextPassword) throws ResponseException, DataAccessException {
+        // read the previously hashed password from the database
+        var hashedPassword = getUser(username).password();
 
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        return hashedPassword.equals(providedClearTextPassword);
+       // return encoder.matches(providedClearTextPassword, hashedPassword);
+    }
     @Override
     public void clearUsers() throws DataAccessException, ResponseException {
         var statement = "TRUNCATE users";
@@ -78,7 +90,8 @@ public class SQLUserAccess implements UserAccess{
     public void addUser(UserData user) throws DataAccessException, ResponseException {
         var statement = "INSERT INTO users (username, password, email, json) VALUES (?, ?, ?, ?)";
         var json = new Gson().toJson(user);
-        executeUpdate(statement, user.username(), user.password(), user.email(), json);
+        String encryptedPassword = encryptPassword(user.password());
+        executeUpdate(statement, user.username(), encryptedPassword, user.email(), json);
     }
 
     @Override

@@ -13,7 +13,7 @@ import static java.util.Objects.isNull;
 
 public class LoginService {
     AuthAccess authDB = new SQLAuthAccess();
-    UserAccess userDB = new SQLUserAccess();
+    SQLUserAccess userDB = new SQLUserAccess();
 
     public LoginService() throws ResponseException, DataAccessException {
     }
@@ -22,7 +22,7 @@ public class LoginService {
         String username = user.username();
         if (!isNull(userDB.getUser(username))) {
             UserData storedUser = userDB.getUser(username);
-            if (storedUser.password().equals(user.password())) {
+            if (userDB.verifyUser(user.username(),user.password())) {
                 String authToken = UUID.randomUUID().toString();
                 AuthData authorization = new AuthData(username, authToken);
                 authDB.createAuth(authorization);
