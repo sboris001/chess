@@ -52,4 +52,18 @@ public class AuthAccessTests {
         AuthData auth = auths.getAuth("Unauthorized");
         Assertions.assertTrue(isNull(auth));
     }
+    // Delete Auth test
+    @Test
+    public void deleteAuthPositive() throws ResponseException, DataAccessException {
+        AuthAccess auths = new SQLAuthAccess();
+        auths.deleteAuth("Authorized");
+        Assertions.assertTrue(isNull(auths.getAuth("Authorized")));
+    }
+    // Delete an auth that doesn't exist -- make sure it doesn't delete all auths
+    @Test
+    public void deleteAuthNegative() throws ResponseException, DataAccessException {
+        AuthAccess auths = new SQLAuthAccess();
+        auths.deleteAuth("Unauthorized");
+        Assertions.assertFalse(isNull(auths.getAuth("Authorized")));
+    }
 }
