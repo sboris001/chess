@@ -48,4 +48,20 @@ public class GameAccessTests {
 
         Assertions.assertEquals("unable to update database: INSERT INTO games (gameID, whiteUsername, blackUsername, gameName, json) VALUES (?, ?, ?, ?, ?), Duplicate entry '1' for key 'games.PRIMARY'", thrown.getMessage());
     }
+
+    // Get Game Tests
+    @Test
+    public void getGamePositive() throws ResponseException, DataAccessException {
+        GameAccess games = new SQLGameAccess();
+        GameData game = games.getGame(1);
+
+        Assertions.assertFalse(isNull(game));
+    }
+    // Try to get a game that doesn't exist.  Should return null
+    @Test
+    public void getGameNegative() throws ResponseException, DataAccessException {
+        GameAccess games = new SQLGameAccess();
+        GameData game = games.getGame(100);
+        Assertions.assertTrue(isNull(game));
+    }
 }
