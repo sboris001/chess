@@ -90,4 +90,14 @@ public class GameAccessTests {
         GameData pulledGame = games.getGame(1);
         Assertions.assertEquals(pulledGame.whiteUsername(), "Johnny");
     }
+    // Try to update a game that doesn't exist.  Shouldn't throw an error, but it shouldn't do anything.  Nothing updated, no new row created
+    // Check to see if it creates a new row or not
+    @Test
+    public void updateGameNegative() throws ResponseException, DataAccessException {
+        GameAccess games = new SQLGameAccess();
+        GameData updatedGame = new GameData(100, "Johnny", null, "Game 100", new ChessGame());
+        games.updateGame(100, updatedGame);
+        GameData pulledGame = games.getGame(100);
+        Assertions.assertTrue(isNull(pulledGame));
+    }
 }
