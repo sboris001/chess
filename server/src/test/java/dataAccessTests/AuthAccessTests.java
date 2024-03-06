@@ -1,10 +1,8 @@
 package dataAccessTests;
 
-import chess.ChessGame;
 import dataAccess.*;
 import exceptions.ResponseException;
 import model.AuthData;
-import model.GameData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,4 +64,12 @@ public class AuthAccessTests {
         auths.deleteAuth("Unauthorized");
         Assertions.assertFalse(isNull(auths.getAuth("Authorized")));
     }
+    // Clear Auths Test
+    @Test
+    public void clearAuthsPositive() throws ResponseException, DataAccessException {
+        AuthAccess auths = new SQLAuthAccess();
+        auths.clearAuths();
+        Assertions.assertTrue(isNull(auths.getAuth("Authorized")));
+    }
+    // No real way to test negative case
 }
