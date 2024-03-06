@@ -36,7 +36,20 @@ public class AuthAccessTests {
     public void createAuthNegative() throws ResponseException, DataAccessException {
         AuthAccess auths = new SQLAuthAccess();
         ResponseException thrown = Assertions.assertThrows(ResponseException.class, () -> auths.createAuth(new AuthData("Spencer", "Authorized")));
-
         Assertions.assertEquals("unable to update database: INSERT INTO auths (authToken, username, json) VALUES (?, ?, ?), Duplicate entry 'Authorized' for key 'auths.PRIMARY'", thrown.getMessage());
+    }
+    // Get Auth Tests
+    @Test
+    public void getAuthPositive() throws ResponseException, DataAccessException {
+        AuthAccess auths = new SQLAuthAccess();
+        AuthData auth = auths.getAuth("Authorized");
+        Assertions.assertFalse(isNull(auth));
+    }
+    // Try to get an auth that doesn't exist
+    @Test
+    public void getAuthNegative() throws ResponseException, DataAccessException {
+        AuthAccess auths = new SQLAuthAccess();
+        AuthData auth = auths.getAuth("Unauthorized");
+        Assertions.assertTrue(isNull(auth));
     }
 }
