@@ -81,13 +81,13 @@ public class SQLUserAccess implements UserAccess{
        // return encoder.matches(providedClearTextPassword, hashedPassword);
     }
     @Override
-    public void clearUsers() throws DataAccessException, ResponseException {
+    public void clearUsers() throws ResponseException {
         var statement = "TRUNCATE users";
         executeUpdate(statement);
     }
 
     @Override
-    public void addUser(UserData user) throws DataAccessException, ResponseException {
+    public void addUser(UserData user) throws ResponseException {
         var statement = "INSERT INTO users (username, password, email, json) VALUES (?, ?, ?, ?)";
         var json = new Gson().toJson(user);
         String encryptedPassword = encryptPassword(user.password());
@@ -95,7 +95,7 @@ public class SQLUserAccess implements UserAccess{
     }
 
     @Override
-    public UserData getUser(String username) throws DataAccessException, ResponseException {
+    public UserData getUser(String username) throws ResponseException {
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "SELECT json FROM users WHERE username=?";
             try (var ps = conn.prepareStatement(statement)) {
