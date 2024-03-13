@@ -8,8 +8,6 @@ import static ui.EscapeSequences.*;
 
 public class DrawBoard {
     public DrawBoard() {}
-    private static final int BOARD_SIZE_IN_SQUARES = 8;
-    private static final int SQUARE_SIZE_IN_CHARS = 3;
     private static final String EMPTY = "   ";
     private static final String P = " P "; // Pawn
     private static final String B = " B "; // Bishop
@@ -17,7 +15,7 @@ public class DrawBoard {
     private static final String R = " R "; // Rook
     private static final String Q = " Q "; // Queen
     private static final String K = " K "; // King
-    private static final String[] empty = {EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY};
+    private static final String[] emptyArray = {EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY};
 
 
     public void drawBoard(String[] args) {
@@ -25,23 +23,23 @@ public class DrawBoard {
         headerFooter(out, 1);
         printRow(out, 1, 1,new String[] {R, N, B, K, Q, B, N, R}, "red");
         printRow(out,1, 2, new String[] {P, P, P, P, P, P, P, P}, "red");
-        printRow(out,1, 3, empty);
-        printRow(out,1, 4, empty);
-        printRow(out,1, 5, empty);
-        printRow(out,1, 6, empty);
+        printRow(out,1, 3, emptyArray);
+        printRow(out,1, 4, emptyArray);
+        printRow(out,1, 5, emptyArray);
+        printRow(out,1, 6, emptyArray);
         printRow(out,1, 7, new String[] {P, P, P, P, P, P, P, P}, "blue");
         printRow(out,1, 8, new String[] {R, N, B, K, Q, B, N, R}, "blue");
         headerFooter(out, 1);
         out.println();
         headerFooter(out, 2);
-        printRow(out,2, 8, new String[] {R, N, B, K, Q, B, N, R}, "blue");
+        printRow(out,2, 8, new String[] {R, N, B, Q, K, B, N, R}, "blue");
         printRow(out,2, 7, new String[] {P, P, P, P, P, P, P, P}, "blue");
-        printRow(out,2, 6, empty);
-        printRow(out,2, 5, empty);
-        printRow(out,2, 4, empty);
-        printRow(out,2, 3, empty);
+        printRow(out,2, 6, emptyArray);
+        printRow(out,2, 5, emptyArray);
+        printRow(out,2, 4, emptyArray);
+        printRow(out,2, 3, emptyArray);
         printRow(out,2, 2, new String[] {P, P, P, P, P, P, P, P}, "red");
-        printRow(out,2, 1, new String[] {R, N, B, K, Q, B, N, R}, "red");
+        printRow(out,2, 1, new String[] {R, N, B, Q, K, B, N, R}, "red");
         headerFooter(out, 2);
     }
 
