@@ -24,7 +24,7 @@ public class DrawBoard {
 
     private static void rowAdder(int i, int j, ChessBoard board, String[] rowPiece, String[] rowColor, int orientation) {
         ChessPosition pos = new ChessPosition(i, j);
-        if (orientation == 2) {
+        if (orientation == 1) {
             switch (j) {
                 case (8) -> j = 1;
                 case (7) -> j = 2;
