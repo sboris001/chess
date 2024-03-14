@@ -63,11 +63,11 @@ public class ChessBoard {
         ChessPosition wBishopPos = new ChessPosition(1, 3);
         addPiece(wBishopPos, wBishop);
 
-        ChessPiece wQueen = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN);
+        ChessPiece wQueen = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING);
         ChessPosition wQueenPos = new ChessPosition(1, 4);
         addPiece(wQueenPos, wQueen);
 
-        ChessPiece wKing = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING);
+        ChessPiece wKing = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN);
         ChessPosition wKingPos = new ChessPosition(1, 5);
         addPiece(wKingPos, wKing);
 
@@ -129,11 +129,11 @@ public class ChessBoard {
         ChessPosition bBishopPos = new ChessPosition(8, 3);
         addPiece(bBishopPos, bBishop);
 
-        ChessPiece bQueen = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN);
+        ChessPiece bQueen = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING);
         ChessPosition bQueenPos = new ChessPosition(8, 4);
         addPiece(bQueenPos, bQueen);
 
-        ChessPiece bKing = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING);
+        ChessPiece bKing = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN);
         ChessPosition bKingPos = new ChessPosition(8, 5);
         addPiece(bKingPos, bKing);
 

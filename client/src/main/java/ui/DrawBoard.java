@@ -22,6 +22,43 @@ public class DrawBoard {
     private static final String Q = " Q "; // Queen
     private static final String K = " K "; // King
 
+    private static void rowAdder(int i, int j, ChessBoard board, String[] rowPiece, String[] rowColor, int orientation) {
+        ChessPosition pos = new ChessPosition(i, j);
+        if (orientation == 2) {
+            switch (j) {
+                case (8) -> j = 1;
+                case (7) -> j = 2;
+                case (6) -> j = 3;
+                case (5) -> j = 4;
+                case (4) -> j = 5;
+                case (3) -> j = 6;
+                case (2) -> j = 7;
+                case (1) -> j = 8;
+            }
+        }
+        ChessPiece piece = board.getPiece(pos);
+        if (isNull(piece)) {
+            rowPiece[j-1] = EMPTY;
+            rowColor[j-1] = "";
+        } else{
+            ChessPiece.PieceType type = board.getPiece(pos).getPieceType();
+            ChessGame.TeamColor color = board.getPiece(pos).getTeamColor();
+            switch (type){
+                case null -> rowPiece[j-1] = EMPTY;
+                case KING -> rowPiece[j-1] = K;
+                case PAWN -> rowPiece[j-1] = P;
+                case BISHOP -> rowPiece[j-1] = B;
+                case ROOK -> rowPiece[j-1] = R;
+                case KNIGHT -> rowPiece[j-1] = N;
+                case QUEEN -> rowPiece[j-1] = Q;
+            }
+            switch (color) {
+                case WHITE -> rowColor[j-1] = "blue";
+                case BLACK -> rowColor[j-1] = "red";
+                case null -> rowColor[j-1] = "";
+            }
+        }
+    }
 
 
     public void drawBoard(ChessBoard board, int orientation) {
@@ -29,37 +66,30 @@ public class DrawBoard {
         headerFooter(out, orientation);
         String[] rowPiece = new String[8];
         String[] rowColor = new String[8];
-        for (int i = 1; i < 9; i++) {
-            if (i > 1) {
-                printRow(out, orientation, i-1, rowPiece, rowColor);
-            }
-            for (int j = 1; j < 9; j++) {
-                ChessPosition pos = new ChessPosition(i, j);
-                ChessPiece piece = board.getPiece(pos);
-                if (isNull(piece)) {
-                    rowPiece[j-1] = EMPTY;
-                    rowColor[j-1] = "";
-                } else{
-                    ChessPiece.PieceType type = board.getPiece(pos).getPieceType();
-                    ChessGame.TeamColor color = board.getPiece(pos).getTeamColor();
-                    switch (type){
-                        case null -> rowPiece[j-1] = EMPTY;
-                        case KING -> rowPiece[j-1] = K;
-                        case PAWN -> rowPiece[j-1] = P;
-                        case BISHOP -> rowPiece[j-1] = B;
-                        case ROOK -> rowPiece[j-1] = R;
-                        case KNIGHT -> rowPiece[j-1] = N;
-                        case QUEEN -> rowPiece[j-1] = Q;
-                    }
-                    switch (color) {
-                        case WHITE -> rowColor[j-1] = "blue";
-                        case BLACK -> rowColor[j-1] = "red";
-                        case null -> rowColor[j-1] = "";
-                    }
+
+        if (orientation == 1) {
+            int row = 8;
+            for (int i = 1; i < 9; i++) {
+                if (i > 1) {
+                    printRow(out, orientation, i-1, rowPiece, rowColor);
+                }
+                for (int j = 1; j < 9; j++) {
+                    rowAdder(i, j, board, rowPiece, rowColor, orientation);
                 }
             }
+            printRow(out, orientation, 8, rowPiece, rowColor);
+        } else if (orientation == 2) {
+            for (int i = 8; i > 0; i--) {
+                if (i < 8) {
+                    printRow(out, orientation, i-1, rowPiece, rowColor);
+                }
+                for (int j = 8; j > 0; j--) {
+                    rowAdder(i, j, board, rowPiece, rowColor, orientation);
+                }
+            }
+            printRow(out, orientation, -1, rowPiece, rowColor);
         }
-        printRow(out, orientation, 8, rowPiece, rowColor);
+
         headerFooter(out, orientation);
     }
 
@@ -84,10 +114,19 @@ public class DrawBoard {
 
     private static void printRow(PrintStream out, int orientation, int row, String[] pieces, String[] colors) {
         setGrey(out);
-        out.printf(" %d ", row);
+        if (orientation == 1) {
+            out.printf(" %d ", row);
+        } else if (orientation == 2) {
+            out.printf(" %d ", row+2);
+        }
+
         printList(out, orientation, pieces, row, colors);
         setGrey(out);
-        out.printf(" %d ", row);
+        if (orientation == 1) {
+            out.printf(" %d ", row);
+        } else if (orientation == 2) {
+            out.printf(" %d ", row+2);
+        }
         out.print(RESET_BG_COLOR);
         out.print("\n");
     }
@@ -128,7 +167,7 @@ public class DrawBoard {
                 }
             }
         } else if (orientation == 2) {
-            if (row % 2 != 0) {
+            if (row % 2 == 0) {
                 for (int i = 0; i < pieces.length; i++) {
                     checkColor(out, i, colors);
                     if (i % 2 != 0) {
@@ -159,6 +198,16 @@ public class DrawBoard {
         out.print(SET_BG_COLOR_LIGHT_GREY);
         out.print(SET_TEXT_COLOR_BLACK);
         out.print(SET_TEXT_BOLD);
+    }
+
+    public static void testBoards() {
+        ChessBoard startGame = new ChessBoard();
+        startGame.resetBoard();
+        var drawBoard = new DrawBoard();
+        drawBoard.drawBoard(startGame, 1);
+        System.out.print(RESET_BG_COLOR);
+        System.out.print("\n");
+        drawBoard.drawBoard(startGame, 2);
     }
 
 }
