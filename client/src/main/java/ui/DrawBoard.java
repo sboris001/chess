@@ -61,14 +61,13 @@ public class DrawBoard {
     }
 
 
-    public void drawBoard(ChessBoard board, int orientation) {
+    public static void drawBoard(ChessBoard board, int orientation) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         headerFooter(out, orientation);
         String[] rowPiece = new String[8];
         String[] rowColor = new String[8];
 
         if (orientation == 1) {
-            int row = 8;
             for (int i = 1; i < 9; i++) {
                 if (i > 1) {
                     printRow(out, orientation, i-1, rowPiece, rowColor);
