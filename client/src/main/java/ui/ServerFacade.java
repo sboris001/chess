@@ -62,7 +62,6 @@ public class ServerFacade {
         } catch (IOException | URISyntaxException e) {
             throw new IOException("Could not login");
         }
-
         return response;
     }
 

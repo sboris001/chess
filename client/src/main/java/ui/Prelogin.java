@@ -1,14 +1,17 @@
 package ui;
 
+import model.AuthData;
 import model.UserData;
 
+import java.io.IOException;
 import java.util.Objects;
 import java.util.Scanner;
 
+import static java.util.Objects.isNull;
 import static ui.EscapeSequences.*;
 
 public class Prelogin {
-    static ServerFacade facade = new ServerFacade("localhost:8080");
+    static ServerFacade facade = new ServerFacade("http://localhost:8080");
     public static void userInterface(String string) throws Exception {
         String[] strings = string.split(" ");
         if (strings.length == 1) {
@@ -35,7 +38,12 @@ public class Prelogin {
             String password = strings[2];
             String email = strings[3];
             if (command.equals("Register") || command.equals("register") || command.equals("-r")) {
-                System.out.println();
+                try {
+                    facade.registerUser(new UserData(username, password, email));
+                    System.out.println("Register Successful");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             } else {
                 notRecognized();
             }
