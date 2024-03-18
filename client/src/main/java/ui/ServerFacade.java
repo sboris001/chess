@@ -1,9 +1,7 @@
 package ui;
 
 import com.google.gson.Gson;
-import model.AuthData;
-import model.LoginUser;
-import model.UserData;
+import model.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -64,6 +62,32 @@ public class ServerFacade {
         }
         return response;
     }
+
+    public GameID createGame(AuthData authorization, CreateGameObj game) throws IOException {
+        GameID response;
+        try {
+            URL url = (new URI(serverUrl + "/game")).toURL();
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            http.setRequestProperty("Authorization", authorization.authToken());
+            http.setRequestMethod("POST");
+            http.setDoOutput(true);
+            String reqData = new Gson().toJson(game);
+            try (OutputStream reqBody = http.getOutputStream()) {
+                reqBody.write(reqData.getBytes());
+            }
+            http.connect();
+            try (InputStream respBody = http.getInputStream()) {
+                InputStreamReader reader = new InputStreamReader(respBody);
+                response = new Gson().fromJson(reader, GameID.class);
+            }
+
+        } catch (IOException | URISyntaxException e) {
+            throw new IOException("Could not create game");
+        }
+        return response;
+    }
+
+
 
 
 }

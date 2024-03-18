@@ -1,8 +1,7 @@
 package clientTests;
 
-import model.AuthData;
-import model.LoginUser;
-import model.UserData;
+import com.google.gson.Gson;
+import model.*;
 import org.junit.jupiter.api.*;
 import server.Server;
 import ui.ServerFacade;
@@ -14,12 +13,16 @@ import java.net.*;
 public class ServerFacadeTests {
 
     private static Server server;
+    static ServerFacade facade;
+    static int port;
 
     @BeforeAll
     public static void init() {
         server = new Server();
-        var port = server.run(8080);
+        port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
+        String url = "http://localhost:" + port;
+        facade = new ServerFacade(url);
     }
 
     @AfterAll
@@ -31,7 +34,7 @@ public class ServerFacadeTests {
     @BeforeEach
     public void clearDB() {
         try{
-            URL url = (new URI("http://localhost:8080" + "/db")).toURL();
+            URL url = (new URI("http://localhost:" + port + "/db")).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod("DELETE");
             http.setDoOutput(true);
@@ -46,7 +49,6 @@ public class ServerFacadeTests {
 
     @Test
     public void registerTest() {
-        ServerFacade facade = new ServerFacade("http://localhost:" + "8080");
         try {
             facade.registerUser(new UserData("testUser", "testPassword", "testEmail"));
             System.out.println("Register Successful");
@@ -57,11 +59,21 @@ public class ServerFacadeTests {
 
     @Test
     public void loginTest() {
-        ServerFacade facade = new ServerFacade("http://localhost:" + "8080");
         try {
             facade.registerUser(new UserData("fred", "pw", "maile"));
             AuthData auth = facade.loginUser(new LoginUser("fred", "pw"));
             System.out.println(auth.authToken());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    public void createGameTest() {
+        try {
+            AuthData auth = facade.registerUser(new UserData("fred", "pw", "maile"));
+            GameID id = facade.createGame(auth, new CreateGameObj("Game 1"));
+            System.out.println(new Gson().toJson(id));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
