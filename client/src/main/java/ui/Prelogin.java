@@ -1,12 +1,15 @@
 package ui;
 
+import model.UserData;
+
 import java.util.Objects;
 import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
 
 public class Prelogin {
-    public static void userInterface(String string) {
+    static ServerFacade facade = new ServerFacade("localhost:8080");
+    public static void userInterface(String string) throws Exception {
         String[] strings = string.split(" ");
         if (strings.length == 1) {
             String s = strings[0];
@@ -45,7 +48,7 @@ public class Prelogin {
         System.out.print("[LOGGED_OUT] >>> ");
     }
 
-    private static void notRecognized() {
+    private static void notRecognized() throws Exception {
         System.out.println("Command not recognized -- please type help for a list of commands");
         System.out.print("[LOGGED_OUT] >>> ");
         Scanner in = new Scanner(System.in);
