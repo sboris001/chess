@@ -90,6 +90,8 @@ public class DrawBoard {
         }
 
         headerFooter(out, orientation);
+        System.out.print(RESET_TEXT_COLOR);
+        System.out.println();
     }
 
     private static void headerFooter(PrintStream out, int orientation) {

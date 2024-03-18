@@ -9,15 +9,12 @@ import static ui.EscapeSequences.*;
 
 public class Main {
     public static void main(String[] args) throws Exception {
+        DrawBoard.testBoards();
         Server server = new Server();
-        var port = server.run(8080);
-        System.out.print(port);
+        server.run(8080);
         System.out.print(RESET_BG_COLOR);
         System.out.println("♕ Welcome to the 240 Chess Client: Type help to get started. ♕");
-        System.out.print("[LOGGED_OUT] >>> ");
-        Scanner in = new Scanner(System.in);
-        String s = in.nextLine();
-        Prelogin.userInterface(s);
+        Prelogin.userInterface();
         server.stop();
     }
 }

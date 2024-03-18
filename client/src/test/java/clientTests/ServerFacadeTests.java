@@ -48,7 +48,7 @@ public class ServerFacadeTests {
     public void registerTest() {
         ServerFacade facade = new ServerFacade("http://localhost:" + "8080");
         try {
-            facade.registerUser(new UserData("fred", "pw", "maile"));
+            facade.registerUser(new UserData("testUser", "testPassword", "testEmail"));
             System.out.println("Register Successful");
         } catch (IOException e) {
             throw new RuntimeException(e);
