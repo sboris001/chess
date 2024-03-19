@@ -31,7 +31,7 @@ public class ServerFacadeTests {
         System.out.println("Server Stopped");
     }
 
-    @BeforeEach
+    @AfterEach
     public void clearDB() {
         try{
             URL url = (new URI("http://localhost:" + port + "/db")).toURL();
@@ -60,8 +60,8 @@ public class ServerFacadeTests {
     @Test
     public void loginTest() {
         try {
-            facade.registerUser(new UserData("fred", "pw", "maile"));
-            AuthData auth = facade.loginUser(new LoginUser("fred", "pw"));
+            facade.registerUser(new UserData("testUser", "testPassword", "testEmail"));
+            AuthData auth = facade.loginUser(new LoginUser("testUser", "testPassword"));
             System.out.println(auth.authToken());
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -71,8 +71,8 @@ public class ServerFacadeTests {
     @Test
     public void createGameTest() {
         try {
-            AuthData auth = facade.registerUser(new UserData("fred", "pw", "maile"));
-            GameID id = facade.createGame(auth, new CreateGameObj("Game 1"));
+            AuthData auth = facade.registerUser(new UserData("testUser", "testPassword", "testEmail"));
+            GameID id = facade.createGame(auth, new CreateGameObj("testGame"));
             System.out.println(new Gson().toJson(id));
         } catch (IOException e) {
             throw new RuntimeException(e);

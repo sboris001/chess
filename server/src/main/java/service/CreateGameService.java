@@ -8,11 +8,13 @@ import exceptions.Unauthorized;
 import model.CreateGameObj;
 import model.GameData;
 import model.GameID;
+import java.util.Random;
 
 import static java.util.Objects.isNull;
 
 public class CreateGameService {
-    int gameID = 1;
+    Random rand = new Random();
+    int gameID = rand.nextInt(1000000);
     GameAccess games = new SQLGameAccess();
     AuthAccess authDB = new SQLAuthAccess();
 
@@ -27,8 +29,7 @@ public class CreateGameService {
             throw new BadRequest("Error: bad request");
         } else {
             games.createGame(new GameData(gameID, null, null, game.gameName(), new ChessGame()));
-            gameID += 1;
-            return new GameID(gameID-1);
+            return new GameID(gameID);
         }
     }
 }

@@ -12,8 +12,10 @@ import static java.util.Objects.isNull;
 import static ui.EscapeSequences.*;
 
 public class Prelogin {
-    static ServerFacade facade = new ServerFacade("http://localhost:8080");
-    public static void userInterface() throws Exception {
+
+
+    public static void userInterface(int port) throws Exception {
+        ServerFacade facade = new ServerFacade("http://localhost:" + port);
         String string = "";
         System.out.print("[LOGGED_OUT] >>> ");
         Scanner in = new Scanner(System.in);
@@ -21,7 +23,7 @@ public class Prelogin {
         String[] strings = new String[0];
         if (string.isEmpty()) {
             System.out.println("Please enter a command");
-            userInterface();
+            userInterface(port);
         } else {
             strings = string.split(" ");
         }
@@ -29,16 +31,18 @@ public class Prelogin {
             String s = strings[0];
             if (s.equals("Help") || s.equals("help") || s.equals("-h")) {
                 help();
-                userInterface();
+                userInterface(port);
             } else if (s.equals("Login") || s.equals("login") || s.equals("-l")){
                 System.out.println(SET_TEXT_COLOR_BLUE +
                         "\tlogin <USERNAME> <PASSWORD>" + RESET_TEXT_COLOR + " - to play chess");
-                userInterface();
+                userInterface(port);
             } else if (s.equals("Register") || s.equals("register") || s.equals("-r")){
                 System.out.println(SET_TEXT_COLOR_BLUE + "\tregister <USERNAME> <PASSWORD> <EMAIL>"  + RESET_TEXT_COLOR + " - to create an account");
-                userInterface();
+                userInterface(port);
             } else if (!Objects.equals(s, "Quit") & !Objects.equals(s, "quit") & !Objects.equals(s, "-q")) {
-                notRecognized();}
+                notRecognized();
+                userInterface(port);
+            }
         } else if (strings.length == 3) {
             String command = strings[0];
             String username = strings[1];
@@ -48,14 +52,15 @@ public class Prelogin {
                     AuthData auth = facade.loginUser(new LoginUser(username, password));
                     if (!isNull(auth)) {
                         System.out.println("Logged in successfully!\n\nLogged in as: "+ username +"\nType help to get started.");
-                        Postlogin.userInterface();
+                        Postlogin.userInterface(port, auth);
                     }
                 } catch (IOException e) {
                     System.out.println("Sorry, we couldn't log you in.  Please make sure you are registered and your password is correct!");
-                    userInterface();
+                    userInterface(port);
                 }
             } else {
                 notRecognized();
+                userInterface(port);
             }
         } else if (strings.length == 4) {
             String command = strings[0];
@@ -67,17 +72,19 @@ public class Prelogin {
                     AuthData auth = facade.registerUser(new UserData(username, password, email));
                     if (!isNull(auth)) {
                         System.out.println("Registered successfully!\n\nLogged in as: "+ username + "\nType help to get started.");
-                        Postlogin.userInterface();
+                        Postlogin.userInterface(port, auth);
                     }
                 } catch (IOException e) {
                     System.out.println("Sorry, we couldn't register you.  Please try again with a different username!");
-                    userInterface();
+                    userInterface(port);
                 }
             } else {
                 notRecognized();
+                userInterface(port);
             }
         } else {
             notRecognized();
+            userInterface(port);
         }
     }
 
@@ -91,6 +98,5 @@ public class Prelogin {
 
     private static void notRecognized() throws Exception {
         System.out.println("Command not recognized -- please type help for a list of commands");
-        userInterface();
     }
 }
