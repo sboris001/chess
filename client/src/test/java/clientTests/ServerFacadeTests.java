@@ -23,6 +23,18 @@ public class ServerFacadeTests {
         System.out.println("Started test HTTP server on " + port);
         String url = "http://localhost:" + port;
         facade = new ServerFacade(url);
+        try{
+            URL otherurl = (new URI("http://localhost:" + port + "/db")).toURL();
+            HttpURLConnection http = (HttpURLConnection) otherurl.openConnection();
+            http.setRequestMethod("DELETE");
+            http.setDoOutput(true);
+            http.connect();
+            if (http.getResponseCode() == 200) {
+                System.out.println("DB cleared");
+            }
+        } catch (IOException | URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @AfterAll
