@@ -125,7 +125,7 @@ public class ServerFacade {
             }
 
         } catch (IOException | URISyntaxException e) {
-            throw new IOException("Could not join game");
+            throw new IOException("Could not list games");
         }
         return response;
     }

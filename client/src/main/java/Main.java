@@ -1,9 +1,5 @@
-import chess.ChessBoard;
 import server.Server;
-import ui.DrawBoard;
 import ui.Prelogin;
-import java.util.Arrays;
-import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
 
