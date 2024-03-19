@@ -9,7 +9,6 @@ import static ui.EscapeSequences.*;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        DrawBoard.testBoards();
         Server server = new Server();
         var port = server.run(0);
         System.out.print(RESET_BG_COLOR);

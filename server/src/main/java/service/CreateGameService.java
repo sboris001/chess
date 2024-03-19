@@ -14,7 +14,7 @@ import static java.util.Objects.isNull;
 
 public class CreateGameService {
     Random rand = new Random();
-    int gameID = rand.nextInt(1000000);
+
     GameAccess games = new SQLGameAccess();
     AuthAccess authDB = new SQLAuthAccess();
 
@@ -22,6 +22,7 @@ public class CreateGameService {
     }
 
     public GameID makeGame(String authToken, CreateGameObj game) throws Unauthorized, DataAccessException, BadRequest, ResponseException {
+        int gameID = rand.nextInt(1000000);
         if (isNull(authDB.getAuth(authToken))) {
             throw new Unauthorized("Error: unauthorized");
         }
