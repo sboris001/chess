@@ -77,8 +77,8 @@ public class SQLUserAccess implements UserAccess{
         var hashedPassword = getUser(username).password();
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        return hashedPassword.equals(providedClearTextPassword);
-       // return encoder.matches(providedClearTextPassword, hashedPassword);
+//        return hashedPassword.equals(providedClearTextPassword);
+        return encoder.matches(providedClearTextPassword, hashedPassword);
     }
     @Override
     public void clearUsers() throws ResponseException {
@@ -89,7 +89,8 @@ public class SQLUserAccess implements UserAccess{
     @Override
     public void addUser(UserData user) throws ResponseException {
         var statement = "INSERT INTO users (username, password, email, json) VALUES (?, ?, ?, ?)";
-        var json = new Gson().toJson(user);
+        UserData encryptedUser = new UserData(user.username(), encryptPassword(user.password()), user.email());
+        var json = new Gson().toJson(encryptedUser);
         String encryptedPassword = encryptPassword(user.password());
         executeUpdate(statement, user.username(), encryptedPassword, user.email(), json);
     }
