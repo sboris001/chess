@@ -58,39 +58,12 @@ public class Gameplay {
                     }
                 }
 
-                case "Join", "join", "-j" -> {
-                    if (strings.length == 3) {
-                        int id = Integer.parseInt(strings[1]);
-                        String playerColor = strings[2];
-                        try {
-                            facade.joinGame(auth, new JoinGame(playerColor, id));
-                            System.out.println("Joined successfully!\n");
-                            DrawBoard.testBoards();
-                            userInterface(port, auth);
-                        } catch (IOException e) {
-                            System.out.println("Sorry, we couldn't join your game.  Please check your game id or team color!");
-                            userInterface(port, auth);
-                        }
-                    } else {
-                        System.out.println("Unexpected parameters. Type help for more info");
-                        userInterface(port, auth);
-                    }
-                }
-                case "observe", "Observe", "-o" -> {
+                case "Highlight", "highlight", "-hi" -> {
                     if (strings.length != 2) {
                         System.out.println("Unexpected parameters. Type help for more info");
                         userInterface(port, auth);
                     } else {
-                        int gameID = Integer.parseInt(strings[1]);
-                        try {
-                            facade.joinGame(auth, new JoinGame(null, gameID));
-                            System.out.println("Successfully joined game as an observer!");
-                            DrawBoard.testBoards();
-                            userInterface(port, auth);
-                        } catch (IOException e) {
-                            System.out.println("Sorry, we couldn't join that game.  Please check your game id or team color!");
-                            userInterface(port, auth);
-                        }
+                        String pos = strings[1];
                     }
                 }
                 default -> {
