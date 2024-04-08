@@ -3,7 +3,6 @@ package server;
 import dataAccess.DataAccessException;
 import exceptions.ResponseException;
 import spark.*;
-import websocket.WSServer;
 
 
 public class Server {
@@ -38,8 +37,8 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
-        startWebSocketServer();
 
+        Spark.webSocket("/connect", WSHandler.class);
         Spark.delete("/db", clear);
         Spark.post("/user", register);
         Spark.post("/session", login);
@@ -58,12 +57,4 @@ public class Server {
         Spark.awaitStop();
     }
 
-    private static void startWebSocketServer() {
-        try {
-            WSServer.start();
-            System.out.println("WebSocket server started.");
-        } catch (Exception e) {
-            System.err.println("Failed to start WebSocket server: " + e.getMessage());
-        }
-    }
 }

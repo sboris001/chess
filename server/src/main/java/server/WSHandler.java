@@ -1,16 +1,11 @@
-package websocket;
+package server;
 import org.eclipse.jetty.websocket.api.annotations.*;
 import org.eclipse.jetty.websocket.api.*;
 import spark.Spark;
 import javax.websocket.OnOpen;
 
 @WebSocket
-public class WSServer {
-    public static void start() {
-        Spark.port(8080);
-        Spark.webSocket("/connect", WSServer.class);
-        Spark.get("/echo/:msg", (req, res) -> "HTTP response: " + req.params(":msg"));
-    }
+public class WSHandler {
 
     @OnOpen
     public void onOpen() {
