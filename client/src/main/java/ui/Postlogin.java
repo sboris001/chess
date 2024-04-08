@@ -1,8 +1,11 @@
 package ui;
 
+import chess.ChessGame;
 import model.*;
+import websocket.WSClient;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Scanner;
 
 import static java.util.Objects.isNull;
@@ -101,11 +104,20 @@ public class Postlogin {
                         try {
                             facade.joinGame(auth, new JoinGame(playerColor, id));
                             System.out.println("Joined successfully!\n");
+                            ChessGame.TeamColor color;
+                            if (Objects.equals(playerColor, "WHITE")) {
+                                color = ChessGame.TeamColor.WHITE;
+                            } else {
+                                color = ChessGame.TeamColor.BLACK;
+                            }
+                            WSClient.joinGame(auth, id, color);
                             DrawBoard.testBoards();
                             userInterface(port, auth);
                         } catch (IOException e) {
                             System.out.println("Sorry, we couldn't join your game.  Please check your game id or team color!");
                             userInterface(port, auth);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
                         }
                     } else {
                         System.out.println("Unexpected parameters. Type help for more info");

@@ -5,9 +5,13 @@ import chess.ChessPiece;
 import model.AuthData;
 
 public class JoinPlayer extends UserGameCommand {
-    public JoinPlayer(String authToken, Integer GameID, ChessGame.TeamColor color) {
+    private int gameID;
+    private ChessGame.TeamColor color;
+    public JoinPlayer(String authToken, Integer gameID, ChessGame.TeamColor color) {
         super(authToken);
         commandType = CommandType.JOIN_PLAYER;
+        this.gameID = gameID;
+        this.color = color;
     }
 
 }

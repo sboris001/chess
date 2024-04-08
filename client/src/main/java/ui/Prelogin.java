@@ -13,8 +13,6 @@ import static java.util.Objects.isNull;
 import static ui.EscapeSequences.*;
 
 public class Prelogin {
-
-
     public static void userInterface(int port) throws Exception {
         ServerFacade facade = new ServerFacade("http://localhost:" + port);
         String string = "";

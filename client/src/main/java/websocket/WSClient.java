@@ -1,7 +1,13 @@
 package websocket;
+import chess.ChessGame;
+import model.AuthData;
+import webSocketMessages.userCommands.JoinPlayer;
+
 import javax.websocket.*;
 import java.net.URI;
 import java.util.Scanner;
+
+import static ui.EscapeSequences.*;
 
 public class WSClient extends Endpoint {
 
@@ -18,6 +24,14 @@ public class WSClient extends Endpoint {
             }
 
         }
+    }
+
+    public static void joinGame(AuthData auth, Integer gameID, ChessGame.TeamColor color) throws Exception {
+        var ws = new WSClient();
+        JoinPlayer player = new JoinPlayer(auth.authToken(), gameID, color);
+        String username = auth.username();
+        String message = "JOIN_GAME " + username + " " + gameID + " " + color;
+        ws.send(message);
     }
 
     public Session session;
