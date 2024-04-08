@@ -3,6 +3,7 @@ package ui;
 import model.AuthData;
 import model.LoginUser;
 import model.UserData;
+import websocket.WSClient;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -39,6 +40,9 @@ public class Prelogin {
             } else if (s.equals("Register") || s.equals("register") || s.equals("-r")){
                 System.out.println(SET_TEXT_COLOR_BLUE + "\tregister <USERNAME> <PASSWORD> <EMAIL>"  + RESET_TEXT_COLOR + " - to create an account");
                 userInterface(port);
+            }  else if (s.equals("wstest")) {
+                String[] args = new String[0];
+                WSClient.main(args);
             } else if (!Objects.equals(s, "Quit") & !Objects.equals(s, "quit") & !Objects.equals(s, "-q")) {
                 notRecognized();
                 userInterface(port);
