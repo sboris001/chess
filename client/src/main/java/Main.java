@@ -1,5 +1,6 @@
 import server.Server;
 import ui.Prelogin;
+import websocket.WSServer;
 
 import static ui.EscapeSequences.*;
 
