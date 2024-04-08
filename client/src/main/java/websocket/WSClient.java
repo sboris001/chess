@@ -12,21 +12,6 @@ import static ui.EscapeSequences.*;
 
 public class WSClient extends Endpoint {
 
-    public static void main(String[] args) throws Exception {
-        var ws = new WSClient();
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("Enter a message you want to echo");
-        while (true) {
-            try {
-                ws.send(scanner.nextLine());
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-
-        }
-    }
-
     public static void joinGame(AuthData auth, Integer gameID, ChessGame.TeamColor color) throws Exception {
         var ws = new WSClient();
         JoinPlayer player = new JoinPlayer(auth.authToken(), gameID, color);
