@@ -8,6 +8,8 @@ import exceptions.ResponseException;
 import org.eclipse.jetty.websocket.api.annotations.*;
 import org.eclipse.jetty.websocket.api.*;
 import spark.Spark;
+import webSocketMessages.serverMessages.Notification;
+import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.JoinPlayer;
 import webSocketMessages.userCommands.UserGameCommand;
 
@@ -75,13 +77,15 @@ public class WSHandler {
             tempList.add(session);
             sessions.put(gameID, tempList);
             for (Session sesh : tempList) {
-                sesh.getRemote().sendString("\033[0m" + username + " has joined game " + Integer.toString(gameID) + " as " + color);
+                Notification notification = new Notification("\033[0m" + username + " has joined game " + Integer.toString(gameID) + " as " + color);
+                sesh.getRemote().sendString(new Gson().toJson(notification, Notification.class));
             }
         } else {
             ArrayList<Session> tempList = new ArrayList<>();
             tempList.add(session);
             sessions.put(gameID, tempList);
-            session.getRemote().sendString("\033[0m" + username + " has joined game " + Integer.toString(gameID) + " as " + color);
+            Notification notification = new Notification("\033[0m" + username + " has joined game " + Integer.toString(gameID) + " as " + color);
+            session.getRemote().sendString(new Gson().toJson(notification, Notification.class));
         }
     }
 }
