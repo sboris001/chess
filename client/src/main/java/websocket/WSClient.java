@@ -1,5 +1,6 @@
 package websocket;
 import chess.ChessGame;
+import com.google.gson.Gson;
 import model.AuthData;
 import webSocketMessages.userCommands.JoinPlayer;
 
@@ -29,8 +30,7 @@ public class WSClient extends Endpoint {
     public static void joinGame(AuthData auth, Integer gameID, ChessGame.TeamColor color) throws Exception {
         var ws = new WSClient();
         JoinPlayer player = new JoinPlayer(auth.authToken(), gameID, color);
-        String username = auth.username();
-        String message = "JOIN_GAME " + username + " " + gameID + " " + color;
+        var message = new Gson().toJson(player);
         ws.send(message);
     }
 
