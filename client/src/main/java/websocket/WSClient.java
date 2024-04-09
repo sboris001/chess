@@ -3,9 +3,11 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 import model.AuthData;
 import ui.DrawBoard;
+import webSocketMessages.serverMessages.Error;
 import webSocketMessages.serverMessages.LoadGame;
 import webSocketMessages.serverMessages.Notification;
 import webSocketMessages.serverMessages.ServerMessage;
+import webSocketMessages.userCommands.JoinObserver;
 import webSocketMessages.userCommands.JoinPlayer;
 
 import javax.websocket.*;
@@ -15,11 +17,24 @@ import java.util.Scanner;
 import static ui.EscapeSequences.*;
 
 public class WSClient extends Endpoint {
+    static WSClient ws;
+
+    static {
+        try {
+            ws = new WSClient();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static void joinGame(AuthData auth, Integer gameID, ChessGame.TeamColor color) throws Exception {
-        var ws = new WSClient();
         JoinPlayer player = new JoinPlayer(auth.authToken(), gameID, color);
         var message = new Gson().toJson(player);
+        ws.send(message);
+    }
+    public static void observeGame(AuthData auth, Integer gameID) throws Exception {
+        JoinObserver observer = new JoinObserver(auth.authToken(), gameID);
+        var message = new Gson().toJson(observer);
         ws.send(message);
     }
 
@@ -42,13 +57,17 @@ public class WSClient extends Endpoint {
                         LoadGame loadGame = new Gson().fromJson(message, LoadGame.class);
                         System.out.println();
                         ChessGame.TeamColor color = loadGame.getColor();
-                        if (color == ChessGame.TeamColor.WHITE) {
+                        if (color == ChessGame.TeamColor.WHITE || color == null) {
                             DrawBoard.drawBoard(loadGame.getGame().getBoard(), 2);
                             System.out.print("[IN_GAME] >>> ");
-                        } else {
+                        } else if (color == ChessGame.TeamColor.BLACK){
                             DrawBoard.drawBoard(loadGame.getGame().getBoard(), 1);
                             System.out.print("[IN_GAME] >>> ");
                         }
+                    }
+                    case ERROR -> {
+                        Error error = new Gson().fromJson(message, Error.class);
+                        System.out.print(error.getError());
                     }
                 }
 

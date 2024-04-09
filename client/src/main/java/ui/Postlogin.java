@@ -132,11 +132,13 @@ public class Postlogin {
                         try {
                             facade.joinGame(auth, new JoinGame(null, gameID));
                             System.out.println("Successfully joined game as an observer!");
-                            DrawBoard.testBoards();
-                            userInterface(port, auth);
+                            WSClient.observeGame(auth, gameID);
+                            Gameplay.userInterface(port, auth);
                         } catch (IOException e) {
                             System.out.println("Sorry, we couldn't join that game.  Please check your game id or team color!");
                             userInterface(port, auth);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
                         }
                     }
                 }
