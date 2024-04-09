@@ -13,7 +13,7 @@ import static ui.EscapeSequences.RESET_TEXT_COLOR;
 import static ui.EscapeSequences.SET_TEXT_COLOR_BLUE;
 
 public class Postlogin {
-    public static void userInterface(int port, AuthData auth) {
+    public static void userInterface(int port, AuthData auth) throws Exception {
         ServerFacade facade = new ServerFacade("http://localhost:" + port);
         String string;
         System.out.print("[LOGGED_IN] >>> ");
@@ -135,7 +135,8 @@ public class Postlogin {
                             WSClient.observeGame(auth, gameID);
                             Gameplay.userInterface(port, auth);
                         } catch (IOException e) {
-                            System.out.println("Sorry, we couldn't join that game.  Please check your game id or team color!");
+//                            System.out.println("Sorry, we couldn't join that game.  Please check your game id or team color!");
+                            WSClient.observeGame(auth, gameID);
                             userInterface(port, auth);
                         } catch (Exception e) {
                             throw new RuntimeException(e);
