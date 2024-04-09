@@ -15,7 +15,6 @@ import java.util.Scanner;
 import static ui.EscapeSequences.*;
 
 public class WSClient extends Endpoint {
-    DrawBoard drawBoard = new DrawBoard();
 
     public static void joinGame(AuthData auth, Integer gameID, ChessGame.TeamColor color) throws Exception {
         var ws = new WSClient();
@@ -37,7 +36,7 @@ public class WSClient extends Endpoint {
                 switch (serverMessage.getServerMessageType()) {
                     case NOTIFICATION -> {
                         Notification notification = new Gson().fromJson(message, Notification.class);
-                        System.out.println(notification.getNotification());
+                        System.out.print(notification.getNotification());
                     }
                     case LOAD_GAME -> {
                         LoadGame loadGame = new Gson().fromJson(message, LoadGame.class);
@@ -45,8 +44,10 @@ public class WSClient extends Endpoint {
                         ChessGame.TeamColor color = loadGame.getColor();
                         if (color == ChessGame.TeamColor.WHITE) {
                             DrawBoard.drawBoard(loadGame.getGame().getBoard(), 2);
+                            System.out.print("[IN_GAME] >>> ");
                         } else {
                             DrawBoard.drawBoard(loadGame.getGame().getBoard(), 1);
+                            System.out.print("[IN_GAME] >>> ");
                         }
                     }
                 }

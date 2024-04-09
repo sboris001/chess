@@ -1,4 +1,5 @@
 package server;
+import chess.ChessGame;
 import com.google.gson.Gson;
 import dataAccess.DataAccessException;
 import dataAccess.SQLAuthAccess;
@@ -39,14 +40,14 @@ public class WSHandler {
         JoinPlayer player = new Gson().fromJson(message, JoinPlayer.class);
         String username = authDAO.getAuth(player.getAuthString()).username();
         int gameID = player.getGameID();
-        String color = player.getColor().toString();
+        ChessGame.TeamColor color = player.getColor();
         if (sessions.containsKey(gameID)) {
             ArrayList<Session> tempList = sessions.get(gameID);
             tempList.add(session);
             sessions.put(gameID, tempList);
             for (Session sesh : tempList) {
                 if (sesh != session) {
-                    Notification notification = new Notification("\n\033[0mNotification:  " + username + " has joined game " + gameID + " as " + color + "\n");
+                    Notification notification = new Notification("\n\033[0mNotification:  " + username + " has joined game " + gameID + " as " + color.toString() + "\n[IN_GAME] >>> ");
                     sesh.getRemote().sendString(new Gson().toJson(notification, Notification.class));
                     GameData game = gameDAO.getGame(gameID);
                     LoadGame loadGame = new LoadGame(game.game(), player.getColor());
