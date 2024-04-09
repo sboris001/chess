@@ -2,6 +2,10 @@ package websocket;
 import chess.ChessGame;
 import com.google.gson.Gson;
 import model.AuthData;
+import ui.DrawBoard;
+import webSocketMessages.serverMessages.LoadGame;
+import webSocketMessages.serverMessages.Notification;
+import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.JoinPlayer;
 
 import javax.websocket.*;
@@ -11,6 +15,7 @@ import java.util.Scanner;
 import static ui.EscapeSequences.*;
 
 public class WSClient extends Endpoint {
+    DrawBoard drawBoard = new DrawBoard();
 
     public static void joinGame(AuthData auth, Integer gameID, ChessGame.TeamColor color) throws Exception {
         var ws = new WSClient();
@@ -28,7 +33,19 @@ public class WSClient extends Endpoint {
 
         this.session.addMessageHandler(new MessageHandler.Whole<String>() {
             public void onMessage(String message) {
-                System.out.println(message);
+                ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
+                switch (serverMessage.getServerMessageType()) {
+                    case NOTIFICATION -> {
+                        Notification notification = new Gson().fromJson(message, Notification.class);
+                        System.out.println(notification.getNotification());
+                    }
+                    case LOAD_GAME -> {
+                        LoadGame loadGame = new Gson().fromJson(message, LoadGame.class);
+                        System.out.println();
+                        DrawBoard.drawBoard(loadGame.getGame().getBoard(), 1);
+                    }
+                }
+
             }
         });
     }

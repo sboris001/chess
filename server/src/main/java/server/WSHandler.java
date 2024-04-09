@@ -47,7 +47,7 @@ public class WSHandler {
             for (Session sesh : tempList) {
                 if (sesh != session) {
                     Notification notification = new Notification("\n\033[0mNotification:  " + username + " has joined game " + gameID + " as " + color + "\n");
-                    sesh.getRemote().sendString(notification.getNotification());
+                    sesh.getRemote().sendString(new Gson().toJson(notification, Notification.class));
                     GameData game = gameDAO.getGame(gameID);
                     LoadGame loadGame = new LoadGame(game.game());
                     session.getRemote().sendString(new Gson().toJson(loadGame, LoadGame.class));
