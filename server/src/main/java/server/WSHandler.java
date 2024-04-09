@@ -34,33 +34,47 @@ public class WSHandler {
         switch(command.getCommandType()) {
             case JOIN_PLAYER -> joinPlayer(session, message);
             case JOIN_OBSERVER -> joinObserver(session, message);
-//            case MAKE_MOVE -> makeMove();
+            case MAKE_MOVE -> makeMove();
 //            case LEAVE -> leave();
 //            case RESIGN -> resign();
         }
     }
     Map<Integer, ArrayList<Session>> sessions = new HashMap<>();
     public void joinPlayer(Session session, String message) throws ResponseException, IOException, DataAccessException {
+        int errorCount = 0;
         JoinPlayer player = new Gson().fromJson(message, JoinPlayer.class);
-        String username = authDAO.getAuth(player.getAuthString()).username();
-        int gameID = player.getGameID();
-        ChessGame.TeamColor color = player.getColor();
-        GameData checkGame = gameDAO.getGame(gameID);
-        String white = checkGame.whiteUsername();
-        String black = checkGame.blackUsername();
-        if (color.equals(ChessGame.TeamColor.BLACK)) {
-            if (!Objects.equals(username, black)) {
+        if (isNull(authDAO.getAuth(player.getAuthString()))) {
+            Error error = new Error("\nError - Unauthorized\n[LOGGED_IN] >>> ");
+            session.getRemote().sendString(new Gson().toJson(error, Error.class));
+        } else {
+            String username = authDAO.getAuth(player.getAuthString()).username();
+            int gameID = player.getGameID();
+            ChessGame.TeamColor color = player.getColor();
+            GameData checkGame = gameDAO.getGame(gameID);
+            if (!isNull(checkGame)) {
+                String white = checkGame.whiteUsername();
+                String black = checkGame.blackUsername();
+                if (color.equals(ChessGame.TeamColor.BLACK)) {
+                    if (!Objects.equals(username, black)) {
+                        errorCount += 1;
+                    }
+                } else if (!Objects.equals(username, white)) {
+                    errorCount += 1;
+                }
+            } else {
+                errorCount += 100;
+            }
+            if (errorCount > 50) {
                 Error error = new Error("\nError - Game ID does not exist.  Please check your ID and try again\n[LOGGED_IN] >>> ");
+                session.getRemote().sendString(new Gson().toJson(error, Error.class));
+            } else if (errorCount > 0) {
+                Error error = new Error("\nError - User does not match.  Please check your team and try again\n[LOGGED_IN] >>> ");
                 session.getRemote().sendString(new Gson().toJson(error, Error.class));
             } else {
                 joinHelper(gameID, session, username, color, player);
             }
-        } else if (!Objects.equals(username, white)) {
-            Error error = new Error("\nError - Game ID does not exist.  Please check your ID and try again\n[LOGGED_IN] >>> ");
-            session.getRemote().sendString(new Gson().toJson(error, Error.class));
-        } else {
-            joinHelper(gameID, session, username, color, player);
         }
+
 
 
 
@@ -92,38 +106,46 @@ public class WSHandler {
 
     public void joinObserver(Session session, String message) throws ResponseException, IOException, DataAccessException {
         JoinObserver observer = new Gson().fromJson(message, JoinObserver.class);
-        String username = authDAO.getAuth(observer.getAuthString()).username();
-        Integer gameID = observer.getGameID();
-        int count = 0;
-        if (isNull(gameDAO.getGame(gameID))) {
-            Error error = new Error("\nError - Game ID does not exist.  Please check your ID and try again\n[LOGGED_IN] >>> ");
+        if (isNull(authDAO.getAuth(observer.getAuthString()))) {
+            Error error = new Error("\nError - Unauthorized\n[LOGGED_IN] >>> ");
             session.getRemote().sendString(new Gson().toJson(error, Error.class));
         } else {
-            if (sessions.containsKey(gameID)) {
-                ArrayList<Session> tempList = sessions.get(gameID);
-                tempList.add(session);
-                sessions.put(gameID, tempList);
-                for (Session sesh : tempList) {
-                    if (sesh != session) {
-                        Notification notification = new Notification("\n\033[0mNotification:  " + username + " has joined game " + gameID + " as an observer\n[IN_GAME] >>> ");
-                        sesh.getRemote().sendString(new Gson().toJson(notification, Notification.class));
-                        if (count < 1) {
-                            GameData game = gameDAO.getGame(gameID);
-                            LoadGame loadGame = new LoadGame(game.game(), null);
-                            session.getRemote().sendString(new Gson().toJson(loadGame, LoadGame.class));
-                            count += 1;
+            String username = authDAO.getAuth(observer.getAuthString()).username();
+            Integer gameID = observer.getGameID();
+            int count = 0;
+            if (isNull(gameDAO.getGame(gameID))) {
+                Error error = new Error("\nError - Game ID does not exist.  Please check your ID and try again\n[LOGGED_IN] >>> ");
+                session.getRemote().sendString(new Gson().toJson(error, Error.class));
+            } else {
+                if (sessions.containsKey(gameID)) {
+                    ArrayList<Session> tempList = sessions.get(gameID);
+                    tempList.add(session);
+                    sessions.put(gameID, tempList);
+                    for (Session sesh : tempList) {
+                        if (sesh != session) {
+                            Notification notification = new Notification("\n\033[0mNotification:  " + username + " has joined game " + gameID + " as an observer\n[IN_GAME] >>> ");
+                            sesh.getRemote().sendString(new Gson().toJson(notification, Notification.class));
+                            if (count < 1) {
+                                GameData game = gameDAO.getGame(gameID);
+                                LoadGame loadGame = new LoadGame(game.game(), null);
+                                session.getRemote().sendString(new Gson().toJson(loadGame, LoadGame.class));
+                                count += 1;
+                            }
                         }
                     }
+                } else {
+                    ArrayList<Session> tempList = new ArrayList<>();
+                    tempList.add(session);
+                    sessions.put(gameID, tempList);
+                    GameData game = gameDAO.getGame(gameID);
+                    LoadGame loadGame = new LoadGame(game.game(), null);
+                    session.getRemote().sendString(new Gson().toJson(loadGame, LoadGame.class));
                 }
-            } else {
-                ArrayList<Session> tempList = new ArrayList<>();
-                tempList.add(session);
-                sessions.put(gameID, tempList);
-                GameData game = gameDAO.getGame(gameID);
-                LoadGame loadGame = new LoadGame(game.game(), null);
-                session.getRemote().sendString(new Gson().toJson(loadGame, LoadGame.class));
             }
         }
+    }
+
+    public void makeMove() {
 
     }
 }

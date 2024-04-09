@@ -1,5 +1,6 @@
 package websocket;
 import chess.ChessGame;
+import chess.ChessMove;
 import com.google.gson.Gson;
 import model.AuthData;
 import ui.DrawBoard;
@@ -36,6 +37,10 @@ public class WSClient extends Endpoint {
         JoinObserver observer = new JoinObserver(auth.authToken(), gameID);
         var message = new Gson().toJson(observer);
         ws.send(message);
+    }
+
+    public static void makeMove(AuthData auth, Integer gameID, ChessMove move) {
+        
     }
 
     public Session session;
