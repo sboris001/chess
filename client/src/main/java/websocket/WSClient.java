@@ -42,7 +42,12 @@ public class WSClient extends Endpoint {
                     case LOAD_GAME -> {
                         LoadGame loadGame = new Gson().fromJson(message, LoadGame.class);
                         System.out.println();
-                        DrawBoard.drawBoard(loadGame.getGame().getBoard(), 1);
+                        ChessGame.TeamColor color = loadGame.getColor();
+                        if (color == ChessGame.TeamColor.WHITE) {
+                            DrawBoard.drawBoard(loadGame.getGame().getBoard(), 2);
+                        } else {
+                            DrawBoard.drawBoard(loadGame.getGame().getBoard(), 1);
+                        }
                     }
                 }
 

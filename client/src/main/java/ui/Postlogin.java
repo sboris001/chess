@@ -111,7 +111,7 @@ public class Postlogin {
                                 color = ChessGame.TeamColor.BLACK;
                             }
                             WSClient.joinGame(auth, id, color);
-                            userInterface(port, auth);
+                            Gameplay.userInterface(port, auth);
                         } catch (IOException e) {
                             System.out.println("Sorry, we couldn't join your game.  Please check your game id or team color!");
                             userInterface(port, auth);

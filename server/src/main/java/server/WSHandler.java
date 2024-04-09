@@ -49,7 +49,7 @@ public class WSHandler {
                     Notification notification = new Notification("\n\033[0mNotification:  " + username + " has joined game " + gameID + " as " + color + "\n");
                     sesh.getRemote().sendString(new Gson().toJson(notification, Notification.class));
                     GameData game = gameDAO.getGame(gameID);
-                    LoadGame loadGame = new LoadGame(game.game());
+                    LoadGame loadGame = new LoadGame(game.game(), player.getColor());
                     session.getRemote().sendString(new Gson().toJson(loadGame, LoadGame.class));
                 }
             }
@@ -58,7 +58,7 @@ public class WSHandler {
             tempList.add(session);
             sessions.put(gameID, tempList);
             GameData game = gameDAO.getGame(gameID);
-            LoadGame loadGame = new LoadGame(game.game());
+            LoadGame loadGame = new LoadGame(game.game(), player.getColor());
             session.getRemote().sendString(new Gson().toJson(loadGame, LoadGame.class));
         }
     }
