@@ -10,6 +10,7 @@ import webSocketMessages.serverMessages.Notification;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.JoinObserver;
 import webSocketMessages.userCommands.JoinPlayer;
+import webSocketMessages.userCommands.MakeMove;
 
 import javax.websocket.*;
 import java.net.URI;
@@ -39,8 +40,10 @@ public class WSClient extends Endpoint {
         ws.send(message);
     }
 
-    public static void makeMove(AuthData auth, Integer gameID, ChessMove move) {
-        
+    public static void makeMove(AuthData auth, Integer gameID, ChessMove move) throws Exception {
+        MakeMove makeMove = new MakeMove(auth.authToken(), gameID, move);
+        var message = new Gson().toJson(makeMove);
+        ws.send(message);
     }
 
     public Session session;

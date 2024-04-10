@@ -111,7 +111,7 @@ public class Postlogin {
                                 color = ChessGame.TeamColor.BLACK;
                             }
                             WSClient.joinGame(auth, id, color);
-                            Gameplay.userInterface(port, auth);
+                            Gameplay.userInterface(port, auth, id);
                         } catch (IOException e) {
                             System.out.println("Sorry, we couldn't join your game.  Please check your game id or team color!");
                             userInterface(port, auth);
@@ -133,7 +133,7 @@ public class Postlogin {
                             facade.joinGame(auth, new JoinGame(null, gameID));
                             System.out.println("Successfully joined game as an observer!");
                             WSClient.observeGame(auth, gameID);
-                            Gameplay.userInterface(port, auth);
+                            Gameplay.userInterface(port, auth, gameID);
                         } catch (IOException e) {
 //                            System.out.println("Sorry, we couldn't join that game.  Please check your game id or team color!");
                             WSClient.observeGame(auth, gameID);

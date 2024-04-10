@@ -1,11 +1,16 @@
 package server;
+import chess.ChessBoard;
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataAccess.DataAccessException;
 import dataAccess.SQLAuthAccess;
 import dataAccess.SQLGameAccess;
 import exceptions.ResponseException;
+import model.AuthData;
 import model.GameData;
+import model.GameID;
 import org.eclipse.jetty.websocket.api.annotations.*;
 import org.eclipse.jetty.websocket.api.*;
 import webSocketMessages.serverMessages.Error;
@@ -13,6 +18,7 @@ import webSocketMessages.serverMessages.LoadGame;
 import webSocketMessages.serverMessages.Notification;
 import webSocketMessages.userCommands.JoinObserver;
 import webSocketMessages.userCommands.JoinPlayer;
+import webSocketMessages.userCommands.MakeMove;
 import webSocketMessages.userCommands.UserGameCommand;
 import java.io.IOException;
 import java.util.*;
@@ -34,7 +40,7 @@ public class WSHandler {
         switch(command.getCommandType()) {
             case JOIN_PLAYER -> joinPlayer(session, message);
             case JOIN_OBSERVER -> joinObserver(session, message);
-            case MAKE_MOVE -> makeMove();
+            case MAKE_MOVE -> makeMove(session, message);
 //            case LEAVE -> leave();
 //            case RESIGN -> resign();
         }
@@ -74,10 +80,6 @@ public class WSHandler {
                 joinHelper(gameID, session, username, color, player);
             }
         }
-
-
-
-
     }
 
     private void joinHelper(int gameID, Session session, String username, ChessGame.TeamColor color, JoinPlayer player) throws IOException, ResponseException, DataAccessException {
@@ -145,7 +147,44 @@ public class WSHandler {
         }
     }
 
-    public void makeMove() {
+    public void makeMove(Session session, String message) throws IOException, ResponseException, DataAccessException, InvalidMoveException {
 
+        MakeMove moveJson = new Gson().fromJson(message, MakeMove.class);
+        String authString = moveJson.getAuthString();
+        Integer gameID = moveJson.getGameID();
+        ChessMove move = moveJson.getMove();
+        String username = authDAO.getAuth(authString).username();
+        GameData gameData = gameDAO.getGame(gameID);
+        ChessGame game = gameData.game();
+        ChessGame.TeamColor color;
+        if (Objects.equals(gameData.whiteUsername(), username)){
+            color = ChessGame.TeamColor.WHITE;
+        } else {
+            color = ChessGame.TeamColor.BLACK;
+        }
+        game.makeMove(move);
+        GameData newGameData = new GameData(gameID, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), game);
+        gameDAO.updateGame(gameID, newGameData);
+//        LoadGame loadGame = new LoadGame(game, color);
+//        session.getRemote().sendString(new Gson().toJson(loadGame, LoadGame.class));
+        int count = 0;
+        ArrayList<Session> tempList = sessions.get(gameID);
+        for (Session sesh : tempList) {
+            if (sesh != session) {
+                Notification notification = new Notification("\n\033[0mNotification:  " + username + " has moved a piece.\n[IN_GAME] >>> ");
+                sesh.getRemote().sendString(new Gson().toJson(notification, Notification.class));
+                LoadGame loadGame = new LoadGame(game, color);
+                sesh.getRemote().sendString(new Gson().toJson(loadGame, LoadGame.class));
+                if (count < 1) {
+                    LoadGame loadGame2 = new LoadGame(game, color);
+                    session.getRemote().sendString(new Gson().toJson(loadGame2, LoadGame.class));
+                    count += 1;
+                }
+            }
+        }
+//        Notification notification = new Notification("This is just a test\n");
+//        session.getRemote().sendString(new Gson().toJson(notification, Notification.class));
     }
 }
+
+

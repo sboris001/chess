@@ -1,6 +1,9 @@
 package ui;
 
+import chess.ChessMove;
+import chess.ChessPosition;
 import model.*;
+import websocket.WSClient;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -10,7 +13,7 @@ import static ui.EscapeSequences.RESET_TEXT_COLOR;
 import static ui.EscapeSequences.SET_TEXT_COLOR_BLUE;
 
 public class Gameplay {
-    public static void userInterface(int port, AuthData auth) {
+    public static void userInterface(int port, AuthData auth, int gameID) throws Exception {
         ServerFacade facade = new ServerFacade("http://localhost:" + port);
         String string;
         System.out.print("[IN_GAME] >>> ");
@@ -19,7 +22,7 @@ public class Gameplay {
         String[] strings = new String[0];
         if (string.isEmpty()) {
             System.out.println("Please enter a command");
-            userInterface(port, auth);
+            userInterface(port, auth, gameID);
         } else {
             strings = string.split(" ");
         }
@@ -28,47 +31,59 @@ public class Gameplay {
             switch (s) {
                 case "Help", "help", "-h" -> {
                     help();
-                    userInterface(port, auth);
+                    userInterface(port, auth, gameID);
                 }
                 case "Redraw", "redraw", "-rd" -> {}
                 case "Move", "move", "-m" -> {
-                    System.out.print(SET_TEXT_COLOR_BLUE + "\t" + "move <START POS> <END POS>" + RESET_TEXT_COLOR + " - to make a move\n");
-                    userInterface(port, auth);
+                    System.out.print(SET_TEXT_COLOR_BLUE + "\t" + "move <START POS> <END POS> <PROMO PIECE (IF APPLICABLE)>" + RESET_TEXT_COLOR + " - to make a move\n");
+                    userInterface(port, auth, gameID);
                 }
                 case "Highlight", "highlight", "-hi" -> {
                     System.out.print(SET_TEXT_COLOR_BLUE + "\t" + "highlight <POS>" + RESET_TEXT_COLOR + " - to highlight legal moves for a specified piece\n");
-                    userInterface(port, auth);
+                    userInterface(port, auth, gameID);
                 }
                 case "Resign", "resign", "-rs" -> {}
                 case "Leave", "leave", "-l" -> {}
                 default -> {
                     System.out.println("Command not recognized -- please type help for a list of commands");
-                    userInterface(port, auth);
+                    userInterface(port, auth, gameID);
                 }
             }
         } else {
             switch (s) {
                 case "Move", "move", "-m" -> {
-                    if (strings.length != 3) {
+                    if (strings.length != 3 && strings.length != 4) {
                         System.out.println("Unexpected parameters. Type help for more info");
-                        userInterface(port, auth);
-                    } else {
+                        userInterface(port, auth, gameID);
+                    } else if (strings.length == 4) {
+                        String pieceType = strings[3];
                         String startPos = strings[1];
                         String endPos = strings[2];
+                        ChessMove move = MoveHelper.decodeMove(startPos, endPos, pieceType);
+                        WSClient.makeMove(auth, gameID, move);
+                        userInterface(port, auth, gameID);
+                    } else {
+                        String pieceType = "null";
+                        String startPos = strings[1];
+                        String endPos = strings[2];
+                        ChessMove move = MoveHelper.decodeMove(startPos, endPos, pieceType);
+                        WSClient.makeMove(auth, gameID, move);
+                        userInterface(port, auth, gameID);
                     }
                 }
+
 
                 case "Highlight", "highlight", "-hi" -> {
                     if (strings.length != 2) {
                         System.out.println("Unexpected parameters. Type help for more info");
-                        userInterface(port, auth);
+                        userInterface(port, auth, gameID);
                     } else {
                         String pos = strings[1];
                     }
                 }
                 default -> {
                     System.out.println("Unable to process - please check your inputs and try again!");
-                    userInterface(port, auth);
+                    userInterface(port, auth, gameID);
                 }
             }
         }
@@ -78,7 +93,7 @@ public class Gameplay {
     private static void help() {
         System.out.println(SET_TEXT_COLOR_BLUE + "\t" +
                 "redraw"  + RESET_TEXT_COLOR + " - to redraw the chess board\n\t" + SET_TEXT_COLOR_BLUE +
-                "move <START POS> <END POS>" + RESET_TEXT_COLOR + " - to make a move\n\t" + SET_TEXT_COLOR_BLUE +
+                "move <START POS> <END POS> <PROMO PIECE (IF APPLICABLE)>" + RESET_TEXT_COLOR + " - to make a move\n\t" + SET_TEXT_COLOR_BLUE +
                 "highlight <POS>" + RESET_TEXT_COLOR + " - to highlight legal moves for specified piece\n\t" + SET_TEXT_COLOR_BLUE +
                 "resign" + RESET_TEXT_COLOR + " - to forfeit the game\n\t" + SET_TEXT_COLOR_BLUE +
                 "leave" + RESET_TEXT_COLOR + " - to leave the game\n\t" + SET_TEXT_COLOR_BLUE +
