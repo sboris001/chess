@@ -45,13 +45,8 @@ public class ChessBoard {
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
      */
-    public void resetBoard() {
-        for (ChessPiece[] row : this.board){
-            for (int i = 0; i < 8; i++){
-                row[i] = null;
-            }
-        }
 
+    private void whiteReset() {
         ChessPiece wRook = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
         ChessPosition wRookPos = new ChessPosition(1, 1);
         addPiece(wRookPos, wRook);
@@ -115,9 +110,9 @@ public class ChessBoard {
         ChessPiece wPawn8 = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
         ChessPosition wPawn8Pos = new ChessPosition(2, 8);
         addPiece(wPawn8Pos, wPawn8);
+    }
 
-        //Black pieces next
-
+    private void blackReset(){
         ChessPiece bRook = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
         ChessPosition bRookPos = new ChessPosition(8, 1);
         addPiece(bRookPos, bRook);
@@ -181,7 +176,15 @@ public class ChessBoard {
         ChessPiece bPawn8 = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
         ChessPosition bPawn8Pos = new ChessPosition(7, 8);
         addPiece(bPawn8Pos, bPawn8);
-
+    }
+    public void resetBoard() {
+        for (ChessPiece[] row : this.board){
+            for (int i = 0; i < 8; i++){
+                row[i] = null;
+            }
+        }
+        whiteReset();
+        blackReset();
     }
 
     @Override
