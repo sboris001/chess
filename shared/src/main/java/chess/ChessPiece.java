@@ -83,6 +83,74 @@ public class ChessPiece {
         }else{moves.add(new ChessMove(myPosition, pos, null));}
     }
 
+    private void pawn(ChessBoard board, ChessPosition myPosition, HashSet<ChessMove> moves, int row, int col) {
+        ChessPosition[] whiteStart = {new ChessPosition(2, 1), new ChessPosition(2, 2), new ChessPosition(2, 3), new ChessPosition(2, 4), new ChessPosition(2, 5), new ChessPosition(2, 6), new ChessPosition(2, 7), new ChessPosition(2, 8)};
+        ChessPosition[] blackStart = {new ChessPosition(7, 1), new ChessPosition(7, 2), new ChessPosition(7, 3), new ChessPosition(7, 4), new ChessPosition(7, 5), new ChessPosition(7, 6), new ChessPosition(7, 7), new ChessPosition(7, 8)};
+        ChessPosition[] whitePromo = {new ChessPosition(8, 1), new ChessPosition(8, 2), new ChessPosition(8, 3), new ChessPosition(8, 4), new ChessPosition(8, 5), new ChessPosition(8, 6), new ChessPosition(8, 7), new ChessPosition(8, 8)};
+        ChessPosition[] blackPromo = {new ChessPosition(1, 1), new ChessPosition(1, 2), new ChessPosition(1, 3), new ChessPosition(1, 4), new ChessPosition(1, 5), new ChessPosition(1, 6), new ChessPosition(1, 7), new ChessPosition(1, 8)};
+        ChessPosition[] whiteDoubleMove = {new ChessPosition(row + 1, col), new ChessPosition(row + 2, col)};
+        ChessPosition[] blackDoubleMove = {new ChessPosition(row - 1, col), new ChessPosition(row - 2, col)};
+        ChessPosition[] whiteTakes = {new ChessPosition(row + 1, col + 1), new ChessPosition(row + 1, col - 1)};
+        ChessPosition[] blackTakes = {new ChessPosition(row - 1, col + 1), new ChessPosition(row - 1, col - 1)};
+        if (color == ChessGame.TeamColor.WHITE && Arrays.asList(whiteStart).contains(myPosition)){
+            for (ChessPosition pos : whiteDoubleMove){
+                ChessPiece obstacle = board.getPiece(pos);
+                if (isNull(obstacle)){
+                    moves.add(new ChessMove(myPosition, pos, null));
+                } else {break;}
+            }
+        }
+        if (color == ChessGame.TeamColor.BLACK && Arrays.asList(blackStart).contains(myPosition)){
+            for (ChessPosition pos : blackDoubleMove){
+                ChessPiece obstacle = board.getPiece(pos);
+                if (isNull(obstacle)){
+                    moves.add(new ChessMove(myPosition, pos, null));
+                } else {break;}
+            }
+        }
+
+        if (color == ChessGame.TeamColor.WHITE){
+            ChessPosition check = new ChessPosition(row + 1, col);
+            if (row + 1 < 9){
+                ChessPiece obstacle = board.getPiece(check);
+                if (isNull(obstacle)){
+                    pawnHelper(whitePromo, check, moves, new ChessPosition(row + 1, col));
+                }
+                for (ChessPosition pos : whiteTakes){
+                    if (pos.getColumn() > 0 && pos.getColumn() < 9){
+                        ChessPiece obs = board.getPiece(pos);
+                        if (!isNull(obs)){
+                            if (obs.color != color){
+                                pawnHelper(whitePromo, pos, moves, myPosition);
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+
+        if (color == ChessGame.TeamColor.BLACK){
+            ChessPosition check = new ChessPosition(row - 1, col);
+            if (row - 1 > 0){
+                ChessPiece obstacle = board.getPiece(check);
+                if (isNull(obstacle)){
+                    pawnHelper(blackPromo, check, moves, new ChessPosition(row - 1, col));
+                }
+                for (ChessPosition pos : blackTakes){
+                    if (pos.getColumn() > 0 && pos.getColumn() < 9){
+                        ChessPiece obs = board.getPiece(pos);
+                        if (!isNull(obs)){
+                            if (obs.color != color){
+                                pawnHelper(blackPromo, pos, moves, myPosition);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
@@ -137,73 +205,7 @@ public class ChessPiece {
                 kingAndKnightHelper(checkMoves, board, moves, myPosition);
             }
             case PAWN -> {
-                ChessPosition[] whiteStart = {new ChessPosition(2, 1), new ChessPosition(2, 2), new ChessPosition(2, 3), new ChessPosition(2, 4), new ChessPosition(2, 5), new ChessPosition(2, 6), new ChessPosition(2, 7), new ChessPosition(2, 8)};
-                ChessPosition[] blackStart = {new ChessPosition(7, 1), new ChessPosition(7, 2), new ChessPosition(7, 3), new ChessPosition(7, 4), new ChessPosition(7, 5), new ChessPosition(7, 6), new ChessPosition(7, 7), new ChessPosition(7, 8)};
-                ChessPosition[] whitePromo = {new ChessPosition(8, 1), new ChessPosition(8, 2), new ChessPosition(8, 3), new ChessPosition(8, 4), new ChessPosition(8, 5), new ChessPosition(8, 6), new ChessPosition(8, 7), new ChessPosition(8, 8)};
-                ChessPosition[] blackPromo = {new ChessPosition(1, 1), new ChessPosition(1, 2), new ChessPosition(1, 3), new ChessPosition(1, 4), new ChessPosition(1, 5), new ChessPosition(1, 6), new ChessPosition(1, 7), new ChessPosition(1, 8)};
-                ChessPosition[] whiteDoubleMove = {new ChessPosition(row + 1, col), new ChessPosition(row + 2, col)};
-                ChessPosition[] blackDoubleMove = {new ChessPosition(row - 1, col), new ChessPosition(row - 2, col)};
-                ChessPosition[] whiteTakes = {new ChessPosition(row + 1, col + 1), new ChessPosition(row + 1, col - 1)};
-                ChessPosition[] blackTakes = {new ChessPosition(row - 1, col + 1), new ChessPosition(row - 1, col - 1)};
-                if (color == ChessGame.TeamColor.WHITE && Arrays.asList(whiteStart).contains(myPosition)){
-                    for (ChessPosition pos : whiteDoubleMove){
-                        ChessPiece obstacle = board.getPiece(pos);
-                            if (isNull(obstacle)){
-                                moves.add(new ChessMove(myPosition, pos, null));
-                            } else {break;}
-                    }
-                }
-                if (color == ChessGame.TeamColor.BLACK && Arrays.asList(blackStart).contains(myPosition)){
-                    for (ChessPosition pos : blackDoubleMove){
-                        ChessPiece obstacle = board.getPiece(pos);
-                        if (isNull(obstacle)){
-                            moves.add(new ChessMove(myPosition, pos, null));
-                        } else {break;}
-                    }
-                }
-
-                if (color == ChessGame.TeamColor.WHITE){
-                    ChessPosition check = new ChessPosition(row + 1, col);
-                    if (row + 1 < 9){
-                        ChessPiece obstacle = board.getPiece(check);
-                        if (isNull(obstacle)){
-                            pawnHelper(whitePromo, check, moves, new ChessPosition(row + 1, col));
-                        }
-                        for (ChessPosition pos : whiteTakes){
-                            if (pos.getColumn() > 0 && pos.getColumn() < 9){
-                                ChessPiece obs = board.getPiece(pos);
-                                if (!isNull(obs)){
-                                    if (obs.color != color){
-                                        pawnHelper(whitePromo, pos, moves, myPosition);
-                                    }
-                                }
-                            }
-
-                        }
-                    }
-                }
-
-                if (color == ChessGame.TeamColor.BLACK){
-                    ChessPosition check = new ChessPosition(row - 1, col);
-                    if (row - 1 > 0){
-                        ChessPiece obstacle = board.getPiece(check);
-                        if (isNull(obstacle)){
-                            pawnHelper(blackPromo, check, moves, new ChessPosition(row - 1, col));
-                        }
-                        for (ChessPosition pos : blackTakes){
-                            if (pos.getColumn() > 0 && pos.getColumn() < 9){
-                                ChessPiece obs = board.getPiece(pos);
-                                if (!isNull(obs)){
-                                    if (obs.color != color){
-                                        pawnHelper(blackPromo, pos, moves, myPosition);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-
+                pawn(board, myPosition, moves, row, col);
             }
         }
         return moves;
