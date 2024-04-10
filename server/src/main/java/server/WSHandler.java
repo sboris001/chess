@@ -1,8 +1,5 @@
 package server;
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessMove;
-import chess.InvalidMoveException;
+import chess.*;
 import com.google.gson.Gson;
 import dataAccess.DataAccessException;
 import dataAccess.SQLAuthAccess;
@@ -153,37 +150,42 @@ public class WSHandler {
         String authString = moveJson.getAuthString();
         Integer gameID = moveJson.getGameID();
         ChessMove move = moveJson.getMove();
+        ChessPosition startPos = move.getStartPosition();
         String username = authDAO.getAuth(authString).username();
         GameData gameData = gameDAO.getGame(gameID);
         ChessGame game = gameData.game();
         ChessGame.TeamColor color;
-        if (Objects.equals(gameData.whiteUsername(), username)){
-            color = ChessGame.TeamColor.WHITE;
+        Collection<ChessMove> validMoves = game.validMoves(startPos);
+        if (!validMoves.contains(move)) {
+            Error error = new Error("\nError - Invalid move.  Please check your inputs and try again\n[LOGGED_IN] >>> ");
+            session.getRemote().sendString(new Gson().toJson(error, Error.class));
         } else {
-            color = ChessGame.TeamColor.BLACK;
-        }
-        game.makeMove(move);
-        GameData newGameData = new GameData(gameID, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), game);
-        gameDAO.updateGame(gameID, newGameData);
-//        LoadGame loadGame = new LoadGame(game, color);
-//        session.getRemote().sendString(new Gson().toJson(loadGame, LoadGame.class));
-        int count = 0;
-        ArrayList<Session> tempList = sessions.get(gameID);
-        for (Session sesh : tempList) {
-            if (sesh != session) {
-                Notification notification = new Notification("\n\033[0mNotification:  " + username + " has moved a piece.\n[IN_GAME] >>> ");
-                sesh.getRemote().sendString(new Gson().toJson(notification, Notification.class));
-                LoadGame loadGame = new LoadGame(game, color);
-                sesh.getRemote().sendString(new Gson().toJson(loadGame, LoadGame.class));
-                if (count < 1) {
-                    LoadGame loadGame2 = new LoadGame(game, color);
-                    session.getRemote().sendString(new Gson().toJson(loadGame2, LoadGame.class));
-                    count += 1;
+            if (Objects.equals(gameData.whiteUsername(), username)){
+                color = ChessGame.TeamColor.WHITE;
+            } else {
+                color = ChessGame.TeamColor.BLACK;
+            }
+            game.makeMove(move);
+            GameData newGameData = new GameData(gameID, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), game);
+            gameDAO.updateGame(gameID, newGameData);
+            int count = 0;
+            ArrayList<Session> tempList = sessions.get(gameID);
+            for (Session sesh : tempList) {
+                if (sesh != session) {
+                    Notification notification = new Notification("\n\033[0mNotification:  " + username + " has moved a piece.\n[IN_GAME] >>> ");
+                    sesh.getRemote().sendString(new Gson().toJson(notification, Notification.class));
+                    LoadGame loadGame = new LoadGame(game, color);
+                    sesh.getRemote().sendString(new Gson().toJson(loadGame, LoadGame.class));
+                    if (count < 1) {
+                        LoadGame loadGame2 = new LoadGame(game, color);
+                        session.getRemote().sendString(new Gson().toJson(loadGame2, LoadGame.class));
+                        count += 1;
+                    }
                 }
             }
         }
-//        Notification notification = new Notification("This is just a test\n");
-//        session.getRemote().sendString(new Gson().toJson(notification, Notification.class));
+
+
     }
 }
 
