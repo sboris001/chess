@@ -155,16 +155,22 @@ public class WSHandler {
         GameData gameData = gameDAO.getGame(gameID);
         ChessGame game = gameData.game();
         ChessGame.TeamColor color;
+        if (Objects.equals(gameData.whiteUsername(), username)){
+            color = ChessGame.TeamColor.WHITE;
+        } else {
+            color = ChessGame.TeamColor.BLACK;
+        }
         Collection<ChessMove> validMoves = game.validMoves(startPos);
+        ChessGame.TeamColor turn = game.getTeamTurn();
         if (!validMoves.contains(move)) {
             Error error = new Error("\nError - Invalid move.  Please check your inputs and try again\n[LOGGED_IN] >>> ");
             session.getRemote().sendString(new Gson().toJson(error, Error.class));
-        } else {
-            if (Objects.equals(gameData.whiteUsername(), username)){
-                color = ChessGame.TeamColor.WHITE;
-            } else {
-                color = ChessGame.TeamColor.BLACK;
-            }
+        } else if (turn != color) {
+            Error error = new Error("\nError - It is not your turn.  Hold your horses\n[LOGGED_IN] >>> ");
+            session.getRemote().sendString(new Gson().toJson(error, Error.class));
+        }
+
+        else {
             game.makeMove(move);
             GameData newGameData = new GameData(gameID, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), game);
             gameDAO.updateGame(gameID, newGameData);
