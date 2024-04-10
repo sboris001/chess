@@ -40,32 +40,6 @@ public class SQLUserAccess implements UserAccess{
             throw new ResponseException(500, String.format("Unable to configure database: %s", ex.getMessage()));
         }
     }
-    private void executeUpdate(String statement, Object... params) throws ResponseException {
-        try (var conn = DatabaseManager.getConnection()) {
-            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
-                for (var i = 0; i < params.length; i++) {
-                    var param = params[i];
-                    switch (param) {
-                        case String p -> ps.setString(i + 1, p);
-                        case Integer p -> ps.setInt(i + 1, p);
-                        case UserData p -> ps.setString(i + 1, p.toString());
-                        case null -> ps.setNull(i + 1, NULL);
-                        default -> {
-                        }
-                    }
-                }
-                ps.executeUpdate();
-
-                var rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-                    rs.getInt(1);
-                }
-
-            }
-        } catch (SQLException | DataAccessException e) {
-            throw new ResponseException(500, String.format("unable to update database: %s, %s", statement, e.getMessage()));
-        }
-    }
 
 
     public String encryptPassword(String password) {
@@ -83,7 +57,7 @@ public class SQLUserAccess implements UserAccess{
     @Override
     public void clearUsers() throws ResponseException {
         var statement = "TRUNCATE users";
-        executeUpdate(statement);
+        DataAccessUtility.executeUpdate(statement);
     }
 
     @Override
@@ -92,7 +66,7 @@ public class SQLUserAccess implements UserAccess{
         UserData encryptedUser = new UserData(user.username(), encryptPassword(user.password()), user.email());
         var json = new Gson().toJson(encryptedUser);
         String encryptedPassword = encryptPassword(user.password());
-        executeUpdate(statement, user.username(), encryptedPassword, user.email(), json);
+        DataAccessUtility.executeUpdate(statement, user.username(), encryptedPassword, user.email(), json);
     }
 
     @Override

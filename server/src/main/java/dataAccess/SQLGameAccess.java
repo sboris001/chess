@@ -45,32 +45,7 @@ public class SQLGameAccess implements GameAccess{
             throw new ResponseException(500, String.format("Unable to configure database: %s", ex.getMessage()));
         }
     }
-    private void executeUpdate(String statement, Object... params) throws ResponseException {
-        try (var conn = DatabaseManager.getConnection()) {
-            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
-                for (var i = 0; i < params.length; i++) {
-                    var param = params[i];
-                    switch (param) {
-                        case String p -> ps.setString(i + 1, p);
-                        case Integer p -> ps.setInt(i + 1, p);
-                        case UserData p -> ps.setString(i + 1, p.toString());
-                        case null -> ps.setNull(i + 1, NULL);
-                        default -> {
-                        }
-                    }
-                }
-                ps.executeUpdate();
 
-                var rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-                    rs.getInt(1);
-                }
-
-            }
-        } catch (SQLException | DataAccessException e) {
-            throw new ResponseException(500, String.format("unable to update database: %s, %s", statement, e.getMessage()));
-        }
-    }
 
     private GameData readGame(ResultSet rs) throws SQLException {
         var json = rs.getString("json");
@@ -81,7 +56,7 @@ public class SQLGameAccess implements GameAccess{
     public void createGame(GameData game) throws DataAccessException, ResponseException {
         var statement = "INSERT INTO games (gameID, whiteUsername, blackUsername, gameName, json) VALUES (?, ?, ?, ?, ?)";
         var json = new Gson().toJson(game);
-        executeUpdate(statement, game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName(), json);
+        DataAccessUtility.executeUpdate(statement, game.gameID(), game.whiteUsername(), game.blackUsername(), game.gameName(), json);
     }
 
     @Override
@@ -127,13 +102,13 @@ public class SQLGameAccess implements GameAccess{
         String blackUsername = game.blackUsername();
         String gameName = game.gameName();
         Gson serializer = new Gson();
-        executeUpdate(statement, gameID, whiteUsername, blackUsername, gameName, serializer.toJson(game), gameID);
+        DataAccessUtility.executeUpdate(statement, gameID, whiteUsername, blackUsername, gameName, serializer.toJson(game), gameID);
     }
 
     @Override
     public void clearGames() throws DataAccessException, ResponseException {
         var statement = "TRUNCATE games";
-        executeUpdate(statement);
+        DataAccessUtility.executeUpdate(statement);
     }
 
 }
