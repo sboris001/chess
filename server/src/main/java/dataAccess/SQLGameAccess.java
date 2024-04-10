@@ -2,25 +2,17 @@ package dataAccess;
 
 import com.google.gson.Gson;
 import exceptions.ResponseException;
-import model.AuthData;
 import model.GameData;
-import model.UserData;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
-import static java.sql.Types.NULL;
-
 public class SQLGameAccess implements GameAccess{
 
     public SQLGameAccess() throws ResponseException, DataAccessException {
-        configureDatabase();
-    }
-
-    private final String[] createStatements = {
-            """
+        String[] createStatements = {
+                """
             CREATE TABLE IF NOT EXISTS  games (
               gameID int NOT NULL,
               whiteUsername varchar(256),
@@ -31,19 +23,8 @@ public class SQLGameAccess implements GameAccess{
               INDEX auth_index (gameID)
             )
             """
-    };
-
-    private void configureDatabase() throws ResponseException, DataAccessException {
-        DatabaseManager.createDatabase();
-        try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException ex) {
-            throw new ResponseException(500, String.format("Unable to configure database: %s", ex.getMessage()));
-        }
+        };
+        DataAccessUtility.configureDatabase(createStatements);
     }
 
 
@@ -60,7 +41,7 @@ public class SQLGameAccess implements GameAccess{
     }
 
     @Override
-    public GameData getGame(int gameID) throws DataAccessException, ResponseException {
+    public GameData getGame(int gameID) throws ResponseException {
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "SELECT json FROM games WHERE gameID=?";
             try (var ps = conn.prepareStatement(statement)) {
@@ -96,7 +77,7 @@ public class SQLGameAccess implements GameAccess{
     }
 
     @Override
-    public void updateGame(int gameID, GameData game) throws DataAccessException, ResponseException {
+    public void updateGame(int gameID, GameData game) throws  ResponseException {
         var statement = "UPDATE games SET gameID=?, whiteUsername=?, blackUsername=?, gameName=?, json=? WHERE gameID=?";
         String whiteUsername = game.whiteUsername();
         String blackUsername = game.blackUsername();
@@ -106,7 +87,7 @@ public class SQLGameAccess implements GameAccess{
     }
 
     @Override
-    public void clearGames() throws DataAccessException, ResponseException {
+    public void clearGames() throws ResponseException {
         var statement = "TRUNCATE games";
         DataAccessUtility.executeUpdate(statement);
     }

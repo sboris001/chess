@@ -14,11 +14,8 @@ import static java.sql.Types.NULL;
 public class SQLAuthAccess implements AuthAccess{
 
     public SQLAuthAccess() throws ResponseException, DataAccessException {
-        configureDatabase();
-    }
-
-    private final String[] createStatements = {
-            """
+        String[] createStatements = {
+                """
             CREATE TABLE IF NOT EXISTS  auths (
               authToken varchar(256) NOT NULL,
               username varchar(256) NOT NULL,
@@ -27,19 +24,8 @@ public class SQLAuthAccess implements AuthAccess{
               INDEX auth_index (authToken)
             )
             """
-    };
-
-    private void configureDatabase() throws ResponseException, DataAccessException {
-        DatabaseManager.createDatabase();
-        try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException ex) {
-            throw new ResponseException(500, String.format("Unable to configure database: %s", ex.getMessage()));
-        }
+        };
+        DataAccessUtility.configureDatabase(createStatements);
     }
 
     private AuthData readAuth(ResultSet rs) throws SQLException {

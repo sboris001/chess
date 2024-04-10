@@ -6,17 +6,13 @@ import model.UserData;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.sql.*;
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
-import static java.sql.Types.NULL;
+
 
 public class SQLUserAccess implements UserAccess{
 
     public SQLUserAccess() throws ResponseException, DataAccessException {
-        configureDatabase();
-    }
-
-    private final String[] createStatements = {
-            """
+        String[] createStatements = {
+                """
             CREATE TABLE IF NOT EXISTS  users (
               username varchar(256) NOT NULL,
               password varchar(256) NOT NULL,
@@ -26,19 +22,8 @@ public class SQLUserAccess implements UserAccess{
               INDEX username_index (username)
             )
             """
-    };
-
-    private void configureDatabase() throws ResponseException, DataAccessException {
-        DatabaseManager.createDatabase();
-        try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException ex) {
-            throw new ResponseException(500, String.format("Unable to configure database: %s", ex.getMessage()));
-        }
+        };
+        DataAccessUtility.configureDatabase(createStatements);
     }
 
 
