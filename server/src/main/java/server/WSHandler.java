@@ -12,10 +12,8 @@ import webSocketMessages.serverMessages.Error;
 import webSocketMessages.serverMessages.LoadGame;
 import webSocketMessages.serverMessages.Notification;
 import webSocketMessages.userCommands.*;
-
 import java.io.IOException;
 import java.util.*;
-
 import static java.util.Objects.isNull;
 
 @WebSocket

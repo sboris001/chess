@@ -1,11 +1,8 @@
 package ui;
-
 import chess.ChessMove;
 import model.*;
 import websocket.WSClient;
-
 import java.util.Scanner;
-
 import static ui.EscapeSequences.RESET_TEXT_COLOR;
 import static ui.EscapeSequences.SET_TEXT_COLOR_BLUE;
 

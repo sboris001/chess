@@ -144,71 +144,43 @@ public class DrawBoard {
 
     private static void printList(PrintStream out, int orientation, String[] pieces, int row, String[] colors) {
         if (orientation == 1) {
-            if (row % 2 != 0) {
-                for (int i = 0; i < pieces.length; i++) {
-                    checkColor(out, i, colors);
-                    if (i % 2 != 0) {
-                        out.print(SET_BG_COLOR_BLACK);
-                        out.print(pieces[i]);
-                    } else {
-                        out.print(SET_BG_COLOR_WHITE);
-                        out.print(pieces[i]);
-                    }
-                }
-            } else {
-                for (int i = 0; i < pieces.length; i++) {
-                    checkColor(out, i, colors);
-                    if (i % 2 != 0) {
-                        out.print(SET_BG_COLOR_WHITE);
-                        out.print(pieces[i]);
-                    } else {
-                        out.print(SET_BG_COLOR_BLACK);
-                        out.print(pieces[i]);
-                    }
+            printListHelper(row, pieces, out, colors, row % 2 != 0);
+        } else if (orientation == 2) {
+            printListHelper(row, pieces, out, colors, row % 2 == 0);
+        }
+
+    }
+
+    private static void printListHelper(int row, String[] pieces, PrintStream out, String[] colors, Boolean condition) {
+        if (condition) {
+            for (int i = 0; i < pieces.length; i++) {
+                checkColor(out, i, colors);
+                if (i % 2 != 0) {
+                    out.print(SET_BG_COLOR_BLACK);
+                    out.print(pieces[i]);
+                } else {
+                    out.print(SET_BG_COLOR_WHITE);
+                    out.print(pieces[i]);
                 }
             }
-        } else if (orientation == 2) {
-            if (row % 2 == 0) {
-                for (int i = 0; i < pieces.length; i++) {
-                    checkColor(out, i, colors);
-                    if (i % 2 != 0) {
-                        out.print(SET_BG_COLOR_BLACK);
-                        out.print(pieces[i]);
-                    } else {
-                        out.print(SET_BG_COLOR_WHITE);
-                        out.print(pieces[i]);
-                    }
-                }
-            } else {
-                for (int i = 0; i < pieces.length; i++) {
-                    checkColor(out, i, colors);
-                    if (i % 2 != 0) {
-                        out.print(SET_BG_COLOR_WHITE);
-                        out.print(pieces[i]);
-                    } else {
-                        out.print(SET_BG_COLOR_BLACK);
-                        out.print(pieces[i]);
-                    }
+        } else {
+            for (int i = 0; i < pieces.length; i++) {
+                checkColor(out, i, colors);
+                if (i % 2 != 0) {
+                    out.print(SET_BG_COLOR_WHITE);
+                    out.print(pieces[i]);
+                } else {
+                    out.print(SET_BG_COLOR_BLACK);
+                    out.print(pieces[i]);
                 }
             }
         }
-
     }
 
     private static void setGrey(PrintStream out) {
         out.print(SET_BG_COLOR_LIGHT_GREY);
         out.print(SET_TEXT_COLOR_BLACK);
         out.print(SET_TEXT_BOLD);
-    }
-
-    public static void testBoards() {
-        ChessBoard startGame = new ChessBoard();
-        startGame.resetBoard();
-        var drawBoard = new DrawBoard();
-        drawBoard.drawBoard(startGame, 1);
-        System.out.print(RESET_BG_COLOR);
-        System.out.print("\n");
-        drawBoard.drawBoard(startGame, 2);
     }
 
 }
