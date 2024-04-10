@@ -97,52 +97,8 @@ public class Postlogin {
                     }
                 }
 
-                case "Join", "join", "-j" -> {
-                    if (strings.length == 3) {
-                        int id = Integer.parseInt(strings[1]);
-                        String playerColor = strings[2];
-                        try {
-                            facade.joinGame(auth, new JoinGame(playerColor, id));
-                            System.out.println("Joined successfully!\n");
-                            ChessGame.TeamColor color;
-                            if (Objects.equals(playerColor, "WHITE")) {
-                                color = ChessGame.TeamColor.WHITE;
-                            } else {
-                                color = ChessGame.TeamColor.BLACK;
-                            }
-                            WSClient.joinGame(auth, id, color);
-                            Gameplay.userInterface(port, auth, id);
-                        } catch (IOException e) {
-                            System.out.println("Sorry, we couldn't join your game.  Please check your game id or team color!");
-                            userInterface(port, auth);
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    } else {
-                        System.out.println("Unexpected parameters. Type help for more info");
-                        userInterface(port, auth);
-                    }
-                }
-                case "observe", "Observe", "-o" -> {
-                    if (strings.length != 2) {
-                        System.out.println("Unexpected parameters. Type help for more info");
-                        userInterface(port, auth);
-                    } else {
-                        int gameID = Integer.parseInt(strings[1]);
-                        try {
-                            facade.joinGame(auth, new JoinGame(null, gameID));
-                            System.out.println("Successfully joined game as an observer!");
-                            WSClient.observeGame(auth, gameID);
-                            Gameplay.userInterface(port, auth, gameID);
-                        } catch (IOException e) {
-//                            System.out.println("Sorry, we couldn't join that game.  Please check your game id or team color!");
-                            WSClient.observeGame(auth, gameID);
-                            userInterface(port, auth);
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                }
+                case "Join", "join", "-j" -> join(strings, facade, auth, port);
+                case "observe", "Observe", "-o" -> observe(strings, facade, auth, port);
                 default -> {
                     System.out.println("Unable to process - please check your inputs and try again!");
                     userInterface(port, auth);
@@ -151,6 +107,53 @@ public class Postlogin {
         }
     }
 
+
+    private static void join(String[] strings, ServerFacade facade, AuthData auth, int port) throws Exception {
+        if (strings.length == 3) {
+            int id = Integer.parseInt(strings[1]);
+            String playerColor = strings[2];
+            try {
+                facade.joinGame(auth, new JoinGame(playerColor, id));
+                System.out.println("Joined successfully!\n");
+                ChessGame.TeamColor color;
+                if (Objects.equals(playerColor, "WHITE")) {
+                    color = ChessGame.TeamColor.WHITE;
+                } else {
+                    color = ChessGame.TeamColor.BLACK;
+                }
+                WSClient.joinGame(auth, id, color);
+                Gameplay.userInterface(port, auth, id);
+            } catch (IOException e) {
+                System.out.println("Sorry, we couldn't join your game.  Please check your game id or team color!");
+                userInterface(port, auth);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            System.out.println("Unexpected parameters. Type help for more info");
+            userInterface(port, auth);
+        }
+    }
+
+    private static void observe(String[] strings, ServerFacade facade, AuthData auth, int port) throws Exception {
+        if (strings.length != 2) {
+            System.out.println("Unexpected parameters. Type help for more info");
+            userInterface(port, auth);
+        } else {
+            int gameID = Integer.parseInt(strings[1]);
+            try {
+                facade.joinGame(auth, new JoinGame(null, gameID));
+                System.out.println("Successfully joined game as an observer!");
+                WSClient.observeGame(auth, gameID);
+                Gameplay.userInterface(port, auth, gameID);
+            } catch (IOException e) {
+                WSClient.observeGame(auth, gameID);
+                userInterface(port, auth);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
     private static void help() {
         System.out.println(SET_TEXT_COLOR_BLUE + "\t" +
