@@ -13,10 +13,8 @@ import org.eclipse.jetty.websocket.api.*;
 import webSocketMessages.serverMessages.Error;
 import webSocketMessages.serverMessages.LoadGame;
 import webSocketMessages.serverMessages.Notification;
-import webSocketMessages.userCommands.JoinObserver;
-import webSocketMessages.userCommands.JoinPlayer;
-import webSocketMessages.userCommands.MakeMove;
-import webSocketMessages.userCommands.UserGameCommand;
+import webSocketMessages.userCommands.*;
+
 import java.io.IOException;
 import java.util.*;
 
@@ -39,7 +37,7 @@ public class WSHandler {
             case JOIN_OBSERVER -> joinObserver(session, message);
             case MAKE_MOVE -> makeMove(session, message);
 //            case LEAVE -> leave();
-//            case RESIGN -> resign();
+            case RESIGN -> resign(session, message);
         }
     }
     Map<Integer, ArrayList<Session>> sessions = new HashMap<>();
@@ -155,43 +153,76 @@ public class WSHandler {
         GameData gameData = gameDAO.getGame(gameID);
         ChessGame game = gameData.game();
         ChessGame.TeamColor color;
-        if (Objects.equals(gameData.whiteUsername(), username)){
-            color = ChessGame.TeamColor.WHITE;
+        if (Objects.equals(game.getStatus(), "Inactive")) {
+            Error error = new Error("\nError - This game is completed.\n[LOGGED_IN] >>> ");
+            session.getRemote().sendString(new Gson().toJson(error, Error.class));
         } else {
-            color = ChessGame.TeamColor.BLACK;
-        }
-        Collection<ChessMove> validMoves = game.validMoves(startPos);
-        ChessGame.TeamColor turn = game.getTeamTurn();
-        if (!validMoves.contains(move)) {
-            Error error = new Error("\nError - Invalid move.  Please check your inputs and try again\n[LOGGED_IN] >>> ");
-            session.getRemote().sendString(new Gson().toJson(error, Error.class));
-        } else if (turn != color) {
-            Error error = new Error("\nError - It is not your turn.  Hold your horses\n[LOGGED_IN] >>> ");
-            session.getRemote().sendString(new Gson().toJson(error, Error.class));
-        }
+            if (Objects.equals(gameData.whiteUsername(), username)){
+                color = ChessGame.TeamColor.WHITE;
+            } else {
+                color = ChessGame.TeamColor.BLACK;
+            }
+            Collection<ChessMove> validMoves = game.validMoves(startPos);
+            ChessGame.TeamColor turn = game.getTeamTurn();
+            if (!validMoves.contains(move)) {
+                Error error = new Error("\nError - Invalid move.  Please check your inputs and try again\n[IN_GAME] >>> ");
+                session.getRemote().sendString(new Gson().toJson(error, Error.class));
+            } else if (turn != color) {
+                Error error = new Error("\nError - It is not your turn.  Hold your horses\n[IN_GAME] >>> ");
+                session.getRemote().sendString(new Gson().toJson(error, Error.class));
+            }
 
-        else {
-            game.makeMove(move);
-            GameData newGameData = new GameData(gameID, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), game);
-            gameDAO.updateGame(gameID, newGameData);
-            int count = 0;
-            ArrayList<Session> tempList = sessions.get(gameID);
-            for (Session sesh : tempList) {
-                if (sesh != session) {
-                    Notification notification = new Notification("\n\033[0mNotification:  " + username + " has moved a piece.\n[IN_GAME] >>> ");
-                    sesh.getRemote().sendString(new Gson().toJson(notification, Notification.class));
-                    LoadGame loadGame = new LoadGame(game, color);
-                    sesh.getRemote().sendString(new Gson().toJson(loadGame, LoadGame.class));
-                    if (count < 1) {
-                        LoadGame loadGame2 = new LoadGame(game, color);
-                        session.getRemote().sendString(new Gson().toJson(loadGame2, LoadGame.class));
-                        count += 1;
+            else {
+                game.makeMove(move);
+                GameData newGameData = new GameData(gameID, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), game);
+                gameDAO.updateGame(gameID, newGameData);
+                int count = 0;
+                ArrayList<Session> tempList = sessions.get(gameID);
+                for (Session sesh : tempList) {
+                    if (sesh != session) {
+                        Notification notification = new Notification("\n\033[0mNotification:  " + username + " has moved a piece.\n[IN_GAME] >>> ");
+                        sesh.getRemote().sendString(new Gson().toJson(notification, Notification.class));
+                        LoadGame loadGame = new LoadGame(game, color);
+                        sesh.getRemote().sendString(new Gson().toJson(loadGame, LoadGame.class));
+                        if (count < 1) {
+                            LoadGame loadGame2 = new LoadGame(game, color);
+                            session.getRemote().sendString(new Gson().toJson(loadGame2, LoadGame.class));
+                            count += 1;
+                        }
                     }
                 }
             }
         }
+    }
 
+    public void resign(Session session, String message) throws ResponseException, DataAccessException, IOException {
+        Resign resignJson = new Gson().fromJson(message, Resign.class);
+        String authToken = resignJson.getAuthString();
+        Integer gameID = resignJson.getGameID();
+        String username = authDAO.getAuth(authToken).username();
+        GameData gameData = gameDAO.getGame(gameID);
+        ChessGame game = gameData.game();
 
+        if (Objects.equals(game.getStatus(), "Inactive")) {
+            Error error = new Error("\nError - You are not able to resign as an observer.\n[IN_GAME] >>> ");
+            session.getRemote().sendString(new Gson().toJson(error, Error.class));
+        } else {
+            game.setStatusInactive();
+            gameDAO.updateGame(gameID, new GameData(gameID, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), game));
+            ArrayList<Session> tempList = sessions.get(gameID);
+
+            if (!Objects.equals(username, gameData.whiteUsername()) && !Objects.equals(username, gameData.blackUsername())) {
+                Error error = new Error("\nError - You are not able to resign as an observer.\n[IN_GAME] >>> ");
+                session.getRemote().sendString(new Gson().toJson(error, Error.class));
+            }
+
+            else {
+                for (Session sesh : tempList) {
+                    Notification notification = new Notification("\n\033[0mNotification:  " + username + " has resigned.\n[IN_GAME] >>> ");
+                    sesh.getRemote().sendString(new Gson().toJson(notification, Notification.class));
+                }
+            }
+        }
     }
 }
 

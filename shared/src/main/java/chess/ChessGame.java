@@ -14,6 +14,13 @@ import static java.util.Objects.isNull;
 public class ChessGame {
     ChessBoard board = new ChessBoard();
     TeamColor turn = TeamColor.WHITE;
+    String status;
+    public String getStatus() {
+        return status;
+    }
+    public void setStatusInactive() {
+        status = "Inactive";
+    }
     public ChessGame() {
 
     }
