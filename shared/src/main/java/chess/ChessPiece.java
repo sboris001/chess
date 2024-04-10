@@ -61,6 +61,19 @@ public class ChessPiece {
         return moves;
     }
 
+    private void kingAndKnightHelper (ChessPosition[] checkMoves, ChessBoard board, HashSet<ChessMove> moves, ChessPosition myPosition) {
+        for (ChessPosition pos : checkMoves){
+            if (pos.getRow() < 9 && pos.getRow() > 0 && pos.getColumn() < 9 && pos.getColumn() > 0){
+                ChessPiece obstacle = board.getPiece(pos);
+                if (isNull(obstacle)){
+                    moves.add(new ChessMove(myPosition, pos, null));
+                } else if (obstacle.color != color){
+                    moves.add(new ChessMove(myPosition, pos, null));
+                }
+            }
+        }
+    }
+
     /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
@@ -83,20 +96,10 @@ public class ChessPiece {
         ChessPosition[] right = {new ChessPosition(row, col + 1), new ChessPosition(row, col + 2), new ChessPosition(row, col + 3), new ChessPosition(row, col + 4), new ChessPosition(row, col + 5), new ChessPosition(row, col + 6), new ChessPosition(row, col + 7), new ChessPosition(row, col + 8)};
         ChessPosition[] down = {new ChessPosition(row - 1, col), new ChessPosition(row - 2, col), new ChessPosition(row - 3, col), new ChessPosition(row - 4, col), new ChessPosition(row - 5, col), new ChessPosition(row - 6, col), new ChessPosition(row - 7, col), new ChessPosition(row - 8, col)};
         ChessPosition[] left = {new ChessPosition(row, col - 1), new ChessPosition(row, col - 2), new ChessPosition(row, col - 3), new ChessPosition(row, col - 4), new ChessPosition(row, col - 5), new ChessPosition(row, col - 6), new ChessPosition(row, col - 7), new ChessPosition(row, col - 8)};
-
         switch(type){
             case KING -> {
                 ChessPosition[] checkMoves = {new ChessPosition(row + 1, col - 1),new ChessPosition(row + 1, col), new ChessPosition(row + 1, col + 1), new ChessPosition(row, col + 1), new ChessPosition(row - 1, col + 1), new ChessPosition(row - 1, col), new ChessPosition(row - 1, col - 1), new ChessPosition(row, col - 1)};
-                for (ChessPosition pos : checkMoves){
-                    if (pos.getRow() < 9 && pos.getRow() > 0 && pos.getColumn() < 9 && pos.getColumn() > 0){
-                        ChessPiece obstacle = board.getPiece(pos);
-                        if (isNull(obstacle)){
-                            moves.add(new ChessMove(myPosition, pos, null));
-                        } else if (obstacle.color != color){
-                            moves.add(new ChessMove(myPosition, pos, null));
-                        }
-                    }
-                }
+                kingAndKnightHelper(checkMoves, board, moves, myPosition);
             }
             case BISHOP -> {
                 moves.addAll(continuousMoveChecker(upLeft, board, myPosition));
@@ -122,16 +125,7 @@ public class ChessPiece {
             }
             case KNIGHT -> {
                 ChessPosition[] checkMoves = {new ChessPosition(row + 2, col + 1),new ChessPosition(row + 1, col + 2), new ChessPosition(row - 1, col + 2), new ChessPosition(row - 2, col + 1), new ChessPosition(row - 2, col - 1), new ChessPosition(row - 1, col - 2), new ChessPosition(row + 1, col - 2), new ChessPosition(row + 2, col - 1)};
-                for (ChessPosition pos : checkMoves){
-                    if (pos.getRow() < 9 && pos.getRow() > 0 && pos.getColumn() < 9 && pos.getColumn() > 0){
-                        ChessPiece obstacle = board.getPiece(pos);
-                        if (isNull(obstacle)){
-                            moves.add(new ChessMove(myPosition, pos, null));
-                        } else if (obstacle.color != color){
-                            moves.add(new ChessMove(myPosition, pos, null));
-                        }
-                    }
-                }
+                kingAndKnightHelper(checkMoves, board, moves, myPosition);
             }
             case PAWN -> {
                 ChessPosition[] whiteStart = {new ChessPosition(2, 1), new ChessPosition(2, 2), new ChessPosition(2, 3), new ChessPosition(2, 4), new ChessPosition(2, 5), new ChessPosition(2, 6), new ChessPosition(2, 7), new ChessPosition(2, 8)};
@@ -142,9 +136,6 @@ public class ChessPiece {
                 ChessPosition[] blackDoubleMove = {new ChessPosition(row - 1, col), new ChessPosition(row - 2, col)};
                 ChessPosition[] whiteTakes = {new ChessPosition(row + 1, col + 1), new ChessPosition(row + 1, col - 1)};
                 ChessPosition[] blackTakes = {new ChessPosition(row - 1, col + 1), new ChessPosition(row - 1, col - 1)};
-
-
-
                 if (color == ChessGame.TeamColor.WHITE && Arrays.asList(whiteStart).contains(myPosition)){
                     for (ChessPosition pos : whiteDoubleMove){
                         ChessPiece obstacle = board.getPiece(pos);
