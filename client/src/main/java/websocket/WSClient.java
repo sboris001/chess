@@ -12,9 +12,7 @@ import webSocketMessages.userCommands.*;
 
 import javax.websocket.*;
 import java.net.URI;
-import java.util.Scanner;
 
-import static ui.EscapeSequences.*;
 
 public class WSClient extends Endpoint {
     static WSClient ws;
@@ -61,6 +59,7 @@ public class WSClient extends Endpoint {
     public WSClient() throws Exception {
         URI uri = new URI("ws://localhost:8080/connect");
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+
         this.session = container.connectToServer(this, uri);
 
         this.session.addMessageHandler(new MessageHandler.Whole<String>() {

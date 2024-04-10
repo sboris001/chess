@@ -1,14 +1,11 @@
 package ui;
 
 import chess.ChessMove;
-import chess.ChessPosition;
 import model.*;
 import websocket.WSClient;
 
-import java.io.IOException;
 import java.util.Scanner;
 
-import static java.util.Objects.isNull;
 import static ui.EscapeSequences.RESET_TEXT_COLOR;
 import static ui.EscapeSequences.SET_TEXT_COLOR_BLUE;
 
@@ -45,7 +42,7 @@ public class Gameplay {
                 case "Resign", "resign", "-rs" -> {}
                 case "Leave", "leave", "-l" -> {
                     WSClient.leave(auth, gameID);
-                    userInterface(port, auth, gameID);
+                    Postlogin.userInterface(port, auth);
                 }
                 default -> {
                     System.out.println("Command not recognized -- please type help for a list of commands");
