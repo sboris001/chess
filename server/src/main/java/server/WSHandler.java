@@ -36,7 +36,7 @@ public class WSHandler {
             case JOIN_PLAYER -> joinPlayer(session, message);
             case JOIN_OBSERVER -> joinObserver(session, message);
             case MAKE_MOVE -> makeMove(session, message);
-//            case LEAVE -> leave();
+            case LEAVE -> leave(session, message);
             case RESIGN -> resign(session, message);
         }
     }
@@ -223,6 +223,32 @@ public class WSHandler {
                 }
             }
         }
+    }
+
+    public void leave(Session session, String message) throws ResponseException, DataAccessException, IOException {
+        Leave leaveJson = new Gson().fromJson(message, Leave.class);
+        String username = authDAO.getAuth(leaveJson.getAuthString()).username();
+        Integer gameID = leaveJson.getGameID();
+        GameData game = gameDAO.getGame(gameID);
+        String whiteUser = game.whiteUsername();
+        String blackUser = game.blackUsername();
+        if (Objects.equals(username, whiteUser)) {
+            GameData leftGame = new GameData(gameID, null, blackUser, game.gameName(), game.game());
+            gameDAO.updateGame(gameID, leftGame);
+        } else if (Objects.equals(username, blackUser)) {
+            GameData leftGame = new GameData(gameID, whiteUser, null, game.gameName(), game.game());
+            gameDAO.updateGame(gameID, leftGame);
+        }
+
+        ArrayList<Session> tempList = sessions.get(gameID);
+        for (Session sesh : tempList) {
+            if (sesh != session) {
+                Notification notification = new Notification("\n\033[0mNotification:  " + username + " has left the game.\n[IN_GAME] >>> ");
+                sesh.getRemote().sendString(new Gson().toJson(notification, Notification.class));
+            }
+        }
+        tempList.remove(session);
+        sessions.put(gameID, tempList);
     }
 }
 

@@ -43,7 +43,10 @@ public class Gameplay {
                     userInterface(port, auth, gameID);
                 }
                 case "Resign", "resign", "-rs" -> {}
-                case "Leave", "leave", "-l" -> {}
+                case "Leave", "leave", "-l" -> {
+                    WSClient.leave(auth, gameID);
+                    userInterface(port, auth, gameID);
+                }
                 default -> {
                     System.out.println("Command not recognized -- please type help for a list of commands");
                     userInterface(port, auth, gameID);

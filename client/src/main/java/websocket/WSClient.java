@@ -8,10 +8,7 @@ import webSocketMessages.serverMessages.Error;
 import webSocketMessages.serverMessages.LoadGame;
 import webSocketMessages.serverMessages.Notification;
 import webSocketMessages.serverMessages.ServerMessage;
-import webSocketMessages.userCommands.JoinObserver;
-import webSocketMessages.userCommands.JoinPlayer;
-import webSocketMessages.userCommands.MakeMove;
-import webSocketMessages.userCommands.Resign;
+import webSocketMessages.userCommands.*;
 
 import javax.websocket.*;
 import java.net.URI;
@@ -53,8 +50,10 @@ public class WSClient extends Endpoint {
         ws.send(message);
     }
 
-    public static void leave(AuthData auth) {
-
+    public static void leave(AuthData auth, Integer gameID) throws Exception {
+        Leave leave = new Leave(auth.authToken(), gameID);
+        var message = new Gson().toJson(leave);
+        ws.send(message);
     }
 
     public Session session;
