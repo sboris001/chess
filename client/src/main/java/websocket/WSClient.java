@@ -85,6 +85,10 @@ public class WSClient extends Endpoint {
                         Error error = new Gson().fromJson(message, Error.class);
                         System.out.print(error.getError());
                     }
+                    case null -> {
+                        onMessage("");
+                        onOpen(session, endpointConfig);
+                    }
                 }
 
             }
@@ -97,5 +101,7 @@ public class WSClient extends Endpoint {
 
     public void onOpen(Session session, EndpointConfig endpointConfig) {
     }
+
+    EndpointConfig endpointConfig;
 
 }
