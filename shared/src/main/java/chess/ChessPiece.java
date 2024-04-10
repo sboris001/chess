@@ -74,6 +74,15 @@ public class ChessPiece {
         }
     }
 
+    private void pawnHelper (ChessPosition[] whitePromo, ChessPosition pos, HashSet<ChessMove> moves, ChessPosition myPosition) {
+        if (Arrays.asList(whitePromo).contains(pos)){
+            moves.add(new ChessMove(myPosition, pos, PieceType.QUEEN));
+            moves.add(new ChessMove(myPosition, pos, PieceType.ROOK));
+            moves.add(new ChessMove(myPosition, pos, PieceType.BISHOP));
+            moves.add(new ChessMove(myPosition, pos, PieceType.KNIGHT));
+        }else{moves.add(new ChessMove(myPosition, pos, null));}
+    }
+
     /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
@@ -158,24 +167,14 @@ public class ChessPiece {
                     if (row + 1 < 9){
                         ChessPiece obstacle = board.getPiece(check);
                         if (isNull(obstacle)){
-                            if (Arrays.asList(whitePromo).contains(check)){
-                                moves.add(new ChessMove(myPosition, new ChessPosition(row + 1, col), PieceType.QUEEN));
-                                moves.add(new ChessMove(myPosition, new ChessPosition(row + 1, col), PieceType.ROOK));
-                                moves.add(new ChessMove(myPosition, new ChessPosition(row + 1, col), PieceType.BISHOP));
-                                moves.add(new ChessMove(myPosition, new ChessPosition(row + 1, col), PieceType.KNIGHT));
-                            }else{moves.add(new ChessMove(myPosition, new ChessPosition(row + 1, col), null));}
+                            pawnHelper(whitePromo, check, moves, new ChessPosition(row + 1, col));
                         }
                         for (ChessPosition pos : whiteTakes){
                             if (pos.getColumn() > 0 && pos.getColumn() < 9){
                                 ChessPiece obs = board.getPiece(pos);
                                 if (!isNull(obs)){
                                     if (obs.color != color){
-                                        if (Arrays.asList(whitePromo).contains(pos)){
-                                            moves.add(new ChessMove(myPosition, pos, PieceType.QUEEN));
-                                            moves.add(new ChessMove(myPosition, pos, PieceType.ROOK));
-                                            moves.add(new ChessMove(myPosition, pos, PieceType.BISHOP));
-                                            moves.add(new ChessMove(myPosition, pos, PieceType.KNIGHT));
-                                        }else{moves.add(new ChessMove(myPosition, pos, null));}
+                                        pawnHelper(whitePromo, pos, moves, myPosition);
                                     }
                                 }
                             }
