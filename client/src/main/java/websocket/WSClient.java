@@ -53,6 +53,12 @@ public class WSClient extends Endpoint {
         ws.send(message);
     }
 
+    public static void redraw(AuthData auth, Integer gameID) throws Exception {
+        Redraw redraw = new Redraw(auth.authToken(), gameID);
+        var message = new Gson().toJson(redraw);
+        ws.send(message);
+    }
+
     public Session session;
 
     public WSClient() throws Exception {

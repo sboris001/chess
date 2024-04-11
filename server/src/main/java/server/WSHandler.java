@@ -5,6 +5,7 @@ import dataAccess.DataAccessException;
 import dataAccess.SQLAuthAccess;
 import dataAccess.SQLGameAccess;
 import exceptions.ResponseException;
+import model.AuthData;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.annotations.*;
 import org.eclipse.jetty.websocket.api.*;
@@ -34,6 +35,7 @@ public class WSHandler {
             case MAKE_MOVE -> makeMove(session, message);
             case LEAVE -> leave(session, message);
             case RESIGN -> resign(session, message);
+            case REDRAW -> redraw(session, message);
         }
     }
     Map<Integer, ArrayList<Session>> sessions = new HashMap<>();
@@ -74,6 +76,8 @@ public class WSHandler {
     }
 
     private void joinHelper(int gameID, Session session, String username, ChessGame.TeamColor color, JoinPlayer player) throws IOException, ResponseException, DataAccessException {
+        int count = 0;
+        int count2 = 0;
         if (sessions.containsKey(gameID)) {
             ArrayList<Session> tempList = sessions.get(gameID);
             tempList.add(session);
@@ -82,9 +86,31 @@ public class WSHandler {
                 if (sesh != session) {
                     Notification notification = new Notification("\n\033[0mNotification:  " + username + " has joined game " + gameID + " as " + color.toString() + "\n[IN_GAME] >>> ");
                     sesh.getRemote().sendString(new Gson().toJson(notification, Notification.class));
-                    GameData game = gameDAO.getGame(gameID);
-                    LoadGame loadGame = new LoadGame(game.game(), player.getColor());
-                    session.getRemote().sendString(new Gson().toJson(loadGame, LoadGame.class));
+                    if (count2 < 1) {
+                        GameData game = gameDAO.getGame(gameID);
+                        LoadGame loadGame = new LoadGame(game.game(), player.getColor());
+                        session.getRemote().sendString(new Gson().toJson(loadGame, LoadGame.class));
+                        count += 1;
+                        count2 += 1;
+                    }
+                } else {
+                    if (count < 1) {
+                        if (color == ChessGame.TeamColor.WHITE) {
+                            if (Objects.equals(gameDAO.getGame(gameID).whiteUsername(), username)) {
+                                GameData game = gameDAO.getGame(gameID);
+                                LoadGame loadGame = new LoadGame(game.game(), player.getColor());
+                                session.getRemote().sendString(new Gson().toJson(loadGame, LoadGame.class));
+                                count += 1;
+                            }
+                        } else if (color == ChessGame.TeamColor.BLACK) {
+                            if (Objects.equals(gameDAO.getGame(gameID).blackUsername(), username)) {
+                                GameData game = gameDAO.getGame(gameID);
+                                LoadGame loadGame = new LoadGame(game.game(), player.getColor());
+                                session.getRemote().sendString(new Gson().toJson(loadGame, LoadGame.class));
+                                count += 1;
+                            }
+                        }
+                    }
                 }
             }
         } else {
@@ -95,6 +121,8 @@ public class WSHandler {
             LoadGame loadGame = new LoadGame(game.game(), player.getColor());
             session.getRemote().sendString(new Gson().toJson(loadGame, LoadGame.class));
         }
+
+
     }
 
     public void joinObserver(Session session, String message) throws ResponseException, IOException, DataAccessException {
@@ -151,6 +179,7 @@ public class WSHandler {
         ChessGame game = gameData.game();
         ChessPiece piece = game.getBoard().getPiece(startPos);
         ChessGame.TeamColor color;
+        ChessGame.TeamColor otherColor;
         String[] startAndEnd = recodeMove(startPos, endPos);
         if (Objects.equals(game.getStatus(), "Inactive")) {
             Error error = new Error("\nError - This game is completed.\n[IN_GAME] >>> ");
@@ -158,8 +187,10 @@ public class WSHandler {
         } else {
             if (Objects.equals(gameData.whiteUsername(), username)){
                 color = ChessGame.TeamColor.WHITE;
+                otherColor = ChessGame.TeamColor.BLACK;
             } else {
                 color = ChessGame.TeamColor.BLACK;
+                otherColor = ChessGame.TeamColor.WHITE;
             }
             Collection<ChessMove> validMoves = game.validMoves(startPos);
             ChessGame.TeamColor turn = game.getTeamTurn();
@@ -181,7 +212,7 @@ public class WSHandler {
                     if (sesh != session) {
                         Notification notification = new Notification("\n\033[0mNotification:  " + username + " has moved their " + piece.toString().toLowerCase() + " from " + startAndEnd[0] + " to " + startAndEnd[1] +"\n[IN_GAME] >>> ");
                         sesh.getRemote().sendString(new Gson().toJson(notification, Notification.class));
-                        LoadGame loadGame = new LoadGame(game, color);
+                        LoadGame loadGame = new LoadGame(game, otherColor);
                         sesh.getRemote().sendString(new Gson().toJson(loadGame, LoadGame.class));
                         if (count < 1) {
                             LoadGame loadGame2 = new LoadGame(game, color);
@@ -217,8 +248,13 @@ public class WSHandler {
 
             else {
                 for (Session sesh : tempList) {
-                    Notification notification = new Notification("\n\033[0mNotification:  " + username + " has resigned.\n[IN_GAME] >>> ");
-                    sesh.getRemote().sendString(new Gson().toJson(notification, Notification.class));
+                    if (sesh != session) {
+                        Notification notification = new Notification("\n\033[0mNotification:  " + username + " has resigned.\n[IN_GAME] >>> ");
+                        sesh.getRemote().sendString(new Gson().toJson(notification, Notification.class));
+                    } else {
+                        Notification notification = new Notification("\n\033[0mNotification: You have resigned. Type leave to leave game\n[IN_GAME] >>> ");
+                        sesh.getRemote().sendString(new Gson().toJson(notification, Notification.class));
+                    }
                 }
             }
         }
@@ -248,6 +284,19 @@ public class WSHandler {
         }
         tempList.remove(session);
         sessions.put(gameID, tempList);
+    }
+
+    public void redraw(Session session, String message) throws ResponseException, IOException {
+        Redraw redrawJson = new Gson().fromJson(message, Redraw.class);
+        int gameID = redrawJson.getGameID();
+        ChessGame.TeamColor color = ChessGame.TeamColor.WHITE;
+        GameData gameData = gameDAO.getGame(gameID);
+        String username = authDAO.getAuth(redrawJson.getAuthString()).username();
+        if (Objects.equals(username, gameData.blackUsername())) {
+            color = ChessGame.TeamColor.BLACK;
+        }
+        LoadGame loadGame = new LoadGame(gameData.game(), color);
+        session.getRemote().sendString(new Gson().toJson(loadGame, LoadGame.class));
     }
 
 

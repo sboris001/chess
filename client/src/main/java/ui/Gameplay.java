@@ -27,7 +27,10 @@ public class Gameplay {
                     help();
                     userInterface(port, auth, gameID);
                 }
-                case "Redraw", "redraw", "-rd" -> {}
+                case "Redraw", "redraw", "-rd" -> {
+                    WSClient.redraw(auth, gameID);
+                    userInterface(port, auth, gameID);
+                }
                 case "Move", "move", "-m" -> {
                     System.out.print(SET_TEXT_COLOR_BLUE + "\t" + "move <START POS> <END POS> <PROMO PIECE (IF APPLICABLE)>" + RESET_TEXT_COLOR + " - to make a move\n");
                     userInterface(port, auth, gameID);
@@ -109,7 +112,7 @@ public class Gameplay {
             switch (string) {
                 case "y" -> {
                     WSClient.resign(auth, gameID);
-                    Postlogin.userInterface(port, auth);
+                    userInterface(port, auth, gameID);
                 }
                 case "n" -> userInterface(port, auth, gameID);
                 default -> {
