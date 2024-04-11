@@ -145,12 +145,15 @@ public class WSHandler {
         Integer gameID = moveJson.getGameID();
         ChessMove move = moveJson.getMove();
         ChessPosition startPos = move.getStartPosition();
+        ChessPosition endPos = move.getEndPosition();
         String username = authDAO.getAuth(authString).username();
         GameData gameData = gameDAO.getGame(gameID);
         ChessGame game = gameData.game();
+        ChessPiece piece = game.getBoard().getPiece(startPos);
         ChessGame.TeamColor color;
+        String[] startAndEnd = recodeMove(startPos, endPos);
         if (Objects.equals(game.getStatus(), "Inactive")) {
-            Error error = new Error("\nError - This game is completed.\n[LOGGED_IN] >>> ");
+            Error error = new Error("\nError - This game is completed.\n[IN_GAME] >>> ");
             session.getRemote().sendString(new Gson().toJson(error, Error.class));
         } else {
             if (Objects.equals(gameData.whiteUsername(), username)){
@@ -176,7 +179,7 @@ public class WSHandler {
                 ArrayList<Session> tempList = sessions.get(gameID);
                 for (Session sesh : tempList) {
                     if (sesh != session) {
-                        Notification notification = new Notification("\n\033[0mNotification:  " + username + " has moved a piece.\n[IN_GAME] >>> ");
+                        Notification notification = new Notification("\n\033[0mNotification:  " + username + " has moved their " + piece.toString().toLowerCase() + " from " + startAndEnd[0] + " to " + startAndEnd[1] +"\n[IN_GAME] >>> ");
                         sesh.getRemote().sendString(new Gson().toJson(notification, Notification.class));
                         LoadGame loadGame = new LoadGame(game, color);
                         sesh.getRemote().sendString(new Gson().toJson(loadGame, LoadGame.class));
@@ -245,6 +248,39 @@ public class WSHandler {
         }
         tempList.remove(session);
         sessions.put(gameID, tempList);
+    }
+
+
+    private static String[] recodeMove(ChessPosition startPos, ChessPosition endPos) {
+        HashMap<Integer, String> map = new HashMap<>();
+        map.put(1, "a");
+        map.put(2, "b");
+        map.put(3, "c");
+        map.put(4, "d");
+        map.put(5, "e");
+        map.put(6, "f");
+        map.put(7, "g");
+        map.put(8, "h");
+
+        int startRow = startPos.getRow();
+        int startCol = startPos.getColumn();
+
+        int endRow = endPos.getRow();
+        int endCol = endPos.getColumn();
+
+        String startColString = map.get(startCol);
+        String startRowString = Integer.toString(startRow);
+        String start = startColString + startRowString;
+
+        String endColString = map.get(endCol);
+        String endRowString = Integer.toString(endRow);
+        String end = endColString + endRowString;
+
+        String[] strings = new String[2];
+        strings[0] = start;
+        strings[1] = end;
+
+        return strings;
     }
 }
 

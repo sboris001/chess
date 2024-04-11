@@ -36,7 +36,7 @@ public class Gameplay {
                     System.out.print(SET_TEXT_COLOR_BLUE + "\t" + "highlight <POS>" + RESET_TEXT_COLOR + " - to highlight legal moves for a specified piece\n");
                     userInterface(port, auth, gameID);
                 }
-                case "Resign", "resign", "-rs" -> {}
+                case "Resign", "resign", "-rs" -> resign(port, auth, gameID);
                 case "Leave", "leave", "-l" -> {
                     WSClient.leave(auth, gameID);
                     Postlogin.userInterface(port, auth);
@@ -95,5 +95,28 @@ public class Gameplay {
                 "resign" + RESET_TEXT_COLOR + " - to forfeit the game\n\t" + SET_TEXT_COLOR_BLUE +
                 "leave" + RESET_TEXT_COLOR + " - to leave the game\n\t" + SET_TEXT_COLOR_BLUE +
                 "help" + RESET_TEXT_COLOR + " - to list possible commands");
+    }
+
+    private static void resign(int port, AuthData auth, int gameID) throws Exception {
+        String string;
+        System.out.print("Are you sure you would like to resign? [y/n]: ");
+        Scanner in = new Scanner(System.in);
+        string = in.nextLine();
+        if (string.isEmpty()) {
+            System.out.println("Please enter a command");
+            userInterface(port, auth, gameID);
+        } else {
+            switch (string) {
+                case "y" -> {
+                    WSClient.resign(auth, gameID);
+                    Postlogin.userInterface(port, auth);
+                }
+                case "n" -> userInterface(port, auth, gameID);
+                default -> {
+                    System.out.println("I'm not sure you understand what I'm asking...");
+                    resign(port, auth, gameID);
+                }
+            }
+        }
     }
 }

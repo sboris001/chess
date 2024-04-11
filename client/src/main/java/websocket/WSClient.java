@@ -58,6 +58,7 @@ public class WSClient extends Endpoint {
     public WSClient() throws Exception {
         URI uri = new URI("ws://localhost:8080/connect");
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+        container.setDefaultMaxSessionIdleTimeout(5 * 60 * 1000);
 
         this.session = container.connectToServer(this, uri);
 
@@ -85,10 +86,6 @@ public class WSClient extends Endpoint {
                         Error error = new Gson().fromJson(message, Error.class);
                         System.out.print(error.getError());
                     }
-                    case null -> {
-                        onMessage("");
-                        onOpen(session, endpointConfig);
-                    }
                 }
 
             }
@@ -101,7 +98,5 @@ public class WSClient extends Endpoint {
 
     public void onOpen(Session session, EndpointConfig endpointConfig) {
     }
-
-    EndpointConfig endpointConfig;
 
 }
